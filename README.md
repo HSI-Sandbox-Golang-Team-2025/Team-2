@@ -19,3 +19,6 @@ docker compose up
 ```
 go run cmd/app/main.go
 ```
+
+### Step 5
+Open `localhost:3000/swagger` to see the API Docs
