@@ -1,0 +1,131 @@
+basePath: /api
+definitions:
+  handler.InvalidLoginResponse:
+    properties:
+      message:
+        example: Invalid Credentials!
+        type: string
+    type: object
+  handler.InvalidRegisterResponse:
+    properties:
+      message:
+        example: Registration failed!
+        type: string
+    type: object
+  handler.LoginBody:
+    properties:
+      nip:
+        example: ARN-2402001
+        type: string
+      password:
+        example: "123"
+        type: string
+    type: object
+  handler.RegisterBody:
+    properties:
+      name:
+        example: Teguh
+        type: string
+      nip:
+        example: ARN-2402001
+        type: string
+      password:
+        example: "123"
+        type: string
+    type: object
+  handler.SuccessLoginData:
+    properties:
+      token:
+        example: eyJhbGciOiJIUz..
+        type: string
+    type: object
+  handler.SuccessLoginResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handler.SuccessLoginData'
+      message:
+        example: Login success!
+        type: string
+    type: object
+  handler.SuccessRegisterData:
+    properties:
+      token:
+        example: eyJhbGciOiJIUz..
+        type: string
+    type: object
+  handler.SuccessRegisterResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handler.SuccessRegisterData'
+      message:
+        example: Registration success!
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Learning Platform API Documentations
+  title: Learning Platform
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Authentication
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a user and return a JWT token
+      parameters:
+      - description: New user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration success!
+          schema:
+            $ref: '#/definitions/handler.SuccessRegisterResponse'
+        "400":
+          description: Registration failed!
+          schema:
+            $ref: '#/definitions/handler.InvalidRegisterResponse'
+      summary: User register
+      tags:
+      - Authentication
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
