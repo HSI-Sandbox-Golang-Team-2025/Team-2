@@ -29,7 +29,24 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			code := fiber.StatusInternalServerError
+			message := err.Error()
+			// message := "Internal server error" // Production
+
+			if e, ok := err.(*fiber.Error); ok {
+				if e.Code != fiber.StatusInternalServerError {
+					code = e.Code
+					message = e.Message
+				}
+			}
+
+			return c.Status(code).JSON(fiber.Map{
+				"message": message,
+			})
+		},
+	})
 
 	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{})
 
