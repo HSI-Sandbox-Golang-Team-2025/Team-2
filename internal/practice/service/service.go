@@ -7,14 +7,12 @@ import (
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/repository"
-	practiceQuestionRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_question/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
-	practiceRepo         repository.Repository
-	contentRepo          contentRepository.Repository
-	practiceQuestionRepo practiceQuestionRepository.Repository
+	practiceRepo repository.Repository
+	contentRepo  contentRepository.Repository
 }
 
 func NewService(
