@@ -7,9 +7,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Nip      string    `json:"nip" gorm:"unique"`
-	Password string    `json:"password"`
-	Name     string    `json:"name"`
-	RoleID   uint      `json:"roleId"`
-	Role     role.Role `json:"role"`
+	Nip      string     `json:"nip" gorm:"unique"`
+	Password string     `json:"password"`
+	Name     string     `json:"name"`
+	RoleID   uint       `json:"roleId"`
+	Role     *role.Role `json:"role"`
 }
