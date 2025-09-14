@@ -1,13 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/auth/handler"
 	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/auth/repository"
 	authService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/auth/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
+	contentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/handler"
+	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/repository"
+	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice"
+	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/handler"
+	practiceRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/repository"
+	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/service"
+	practice_answer_choices "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_answer_choices"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_question"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/role"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/track"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user"
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user/repository"
@@ -16,6 +28,7 @@ import (
 	"github.com/gofiber/swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // @title Learning Platform
@@ -48,15 +61,31 @@ func main() {
 		},
 	})
 
-	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	if err != nil {
 		log.Fatal("Failed to connect to database ", err)
 	}
 
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE content_types AS ENUM ('%s', '%s', '%s');",
+			content.ContentTypeMaterial,
+			content.ContentTypePractice,
+			content.ContentTypeProject,
+		),
+	)
+
 	err = db.AutoMigrate(
-		&user.User{},
+		&content.Content{},
+		&practice.Practice{},
+		&practice_answer_choices.PracticeAnswerChoices{},
+		&practice_question.PracticeQuestion{},
 		&role.Role{},
+		&track.Track{},
+		&user.User{},
 	)
 
 	if err != nil {
@@ -66,16 +95,22 @@ func main() {
 	route := app.Group("/api")
 
 	// Create new repos
-	userRepo := userRepository.NewRepository(db)
 	authRepo := authRepository.NewRepository(db)
+	contentRepo := contentRepository.NewRepository(db)
+	practiceRepo := practiceRepository.NewRepository(db)
+	userRepo := userRepository.NewRepository(db)
 
 	// Create new services
-	userService := userService.NewService(userRepo)
-	authService := authService.NewService(authRepo, userRepo)
+	authSvc := authService.NewService(authRepo, userRepo)
+	contentSvc := contentService.NewService(contentRepo)
+	practiceSvc := practiceService.NewService(practiceRepo, contentRepo)
+	userSvc := userService.NewService(userRepo)
 
 	// Create new handlers
-	userHandler.NewHandler(route, userService)
-	authHandler.NewHandler(route, authService)
+	authHandler.NewHandler(route, authSvc)
+	contentHandler.NewHandler(route, contentSvc)
+	practiceHandler.NewHandler(route, practiceSvc)
+	userHandler.NewHandler(route, userSvc)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
