@@ -14,8 +14,6 @@ import (
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/service"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/service"
-	practice_answer_choices "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_answer_choices"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_question"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/question"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/question_answer_choice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/role"
@@ -24,6 +22,10 @@ import (
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice"
+	userPracticeHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/handler"
+	userPracticeRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/repository"
+	userPracticeService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 	"gorm.io/driver/postgres"
@@ -80,13 +82,12 @@ func main() {
 
 	err = db.AutoMigrate(
 		&content.Content{},
-		&practice_answer_choices.PracticeAnswerChoices{},
-		&practice_question.PracticeQuestion{},
 		&question.Question{},
 		&question_answer_choice.QuestionAnswerChoice{},
 		&role.Role{},
 		&track.Track{},
 		&user.User{},
+		&user_practice.UserPractice{},
 	)
 
 	if err != nil {
@@ -98,18 +99,21 @@ func main() {
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
+	userPracticeRepo := userPracticeRepository.NewRepository(db)
 	userRepo := userRepository.NewRepository(db)
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
 	contentSvc := contentService.NewService(contentRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
+	userPracticeSvc := userPracticeService.NewService(userPracticeRepo)
 	userSvc := userService.NewService(userRepo)
 
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
 	contentHandler.NewHandler(route, contentSvc)
 	practiceHandler.NewHandler(route, practiceSvc)
+	userPracticeHandler.NewHandler(route, userPracticeSvc)
 	userHandler.NewHandler(route, userSvc)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
