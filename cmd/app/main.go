@@ -12,12 +12,12 @@ import (
 	contentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/handler"
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/repository"
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/service"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/handler"
-	practiceRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/repository"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice/service"
 	practice_answer_choices "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_answer_choices"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice_question"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/question"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/question_answer_choice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/track"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user"
@@ -80,9 +80,10 @@ func main() {
 
 	err = db.AutoMigrate(
 		&content.Content{},
-		&practice.Practice{},
 		&practice_answer_choices.PracticeAnswerChoices{},
 		&practice_question.PracticeQuestion{},
+		&question.Question{},
+		&question_answer_choice.QuestionAnswerChoice{},
 		&role.Role{},
 		&track.Track{},
 		&user.User{},
@@ -97,13 +98,12 @@ func main() {
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
-	practiceRepo := practiceRepository.NewRepository(db)
 	userRepo := userRepository.NewRepository(db)
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
 	contentSvc := contentService.NewService(contentRepo)
-	practiceSvc := practiceService.NewService(practiceRepo, contentRepo)
+	practiceSvc := practiceService.NewService(contentRepo)
 	userSvc := userService.NewService(userRepo)
 
 	// Create new handlers

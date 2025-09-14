@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/practice"
 	"gorm.io/gorm"
 )
 
@@ -20,12 +19,10 @@ func NewRepository(db *gorm.DB) Repository {
 func (r *repository) GetContents(ctx context.Context, c *[]content.Content, queries map[string]string) error {
 	trackId, _ := strconv.Atoi(queries["trackId"])
 
-	condition := practice.Practice{
-		TrackID: uint(trackId),
-	}
+	condition := content.Content{}
+	condition.TrackID = uint(trackId)
 
-	// if err := r.db.WithContext(ctx).Joins("Practice").Where(&condition).Find(&c).Error; err != nil {
-	if err := r.db.WithContext(ctx).Preload("Practice").Preload("Practice.Questions").Preload("Practice.Questions.AnswerChoices").Where(&condition).Find(&c).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Questions").Preload("Questions.AnswerChoices").Where(&condition).Find(&c).Error; err != nil {
 		return err
 	}
 
@@ -35,11 +32,10 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, quer
 func (r *repository) GetContent(ctx context.Context, c *content.Content, paramId string) error {
 	id, _ := strconv.Atoi(paramId)
 
-	condition := practice.Practice{}
+	condition := content.Content{}
 	condition.ID = uint(id)
 
-	if err := r.db.WithContext(ctx).Preload("Practice").Preload("Practice.Questions").Preload("Practice.Questions.AnswerChoices").Where(&condition).First(&c).Error; err != nil {
-		// if err := r.db.WithContext(ctx).Joins("Practice").Where(&condition).First(&c).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Questions").Preload("Questions.AnswerChoices").Where(&condition).First(&c).Error; err != nil {
 		return err
 	}
 
