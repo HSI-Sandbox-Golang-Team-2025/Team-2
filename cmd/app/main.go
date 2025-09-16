@@ -26,6 +26,8 @@ import (
 	userPracticeHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/handler"
 	userPracticeRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/repository"
 	userPracticeService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice_record"
+	userPracticeRecordRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice_record/repository"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 	"gorm.io/driver/postgres"
@@ -80,6 +82,15 @@ func main() {
 		),
 	)
 
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s');",
+			user_practice.InProgress,
+			user_practice.Submitted,
+			user_practice.Reviewed,
+		),
+	)
+
 	err = db.AutoMigrate(
 		&content.Content{},
 		&question.Question{},
@@ -88,6 +99,7 @@ func main() {
 		&track.Track{},
 		&user.User{},
 		&user_practice.UserPractice{},
+		&user_practice_record.UserPracticeRecord{},
 	)
 
 	if err != nil {
@@ -100,13 +112,14 @@ func main() {
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
 	userPracticeRepo := userPracticeRepository.NewRepository(db)
+	userPracticeRecordRepo := userPracticeRecordRepository.NewRepository(db)
 	userRepo := userRepository.NewRepository(db)
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
 	contentSvc := contentService.NewService(contentRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
-	userPracticeSvc := userPracticeService.NewService(userPracticeRepo)
+	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
 	userSvc := userService.NewService(userRepo)
 
 	// Create new handlers
