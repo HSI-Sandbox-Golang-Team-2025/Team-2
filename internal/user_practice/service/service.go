@@ -108,6 +108,7 @@ func (s *service) ReviewUserPractice(
 
 	userPracticeRecordIds := []uint{}
 
+	// CHECK: apabila body.UserPracticeRecords kosong, *nil bikin panic!
 	for _, bodyRecord := range *body.UserPracticeRecords {
 		userPracticeRecordIds = append(userPracticeRecordIds, bodyRecord.ID)
 	}
@@ -120,6 +121,7 @@ func (s *service) ReviewUserPractice(
 
 	err := s.userPracticeRepo.GetUserPractice(ctx, &userPractice, &condition)
 
+	// CHECK: apabila body.UserPracticeRecords kosong, *nil bikin panic!
 	if err != nil || len(*userPractice.UserPracticeRecords) != len(*body.UserPracticeRecords) {
 		return nil, fiber.NewError(fiber.StatusNotFound, "User practice not found!")
 	}
