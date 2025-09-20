@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/repository"
@@ -21,7 +22,14 @@ func NewService(practiceRepo repository.Repository) Service {
 func (s *service) GetContents(ctx context.Context, queries map[string]string) (*[]content.Content, error) {
 	contents := []content.Content{}
 
-	if err := s.repo.GetContents(ctx, &contents, queries); err != nil {
+	trackId, _ := strconv.Atoi(queries["trackId"])
+
+	condition := repository.GetContentsCondition{
+		TrackId: uint(trackId),
+		Type:    content.ContentType(queries["type"]),
+	}
+
+	if err := s.repo.GetContents(ctx, &contents, &condition); err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
