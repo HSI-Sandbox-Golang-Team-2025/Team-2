@@ -16,13 +16,20 @@ func NewRepository(db *gorm.DB) Repository {
 	return &repository{db: db}
 }
 
-func (r *repository) GetContents(ctx context.Context, c *[]content.Content, queries map[string]string) error {
-	trackId, _ := strconv.Atoi(queries["trackId"])
+type GetContentsCondition struct {
+	TrackId uint
+	Type    content.ContentType
+}
 
-	condition := content.Content{}
-	condition.TrackID = uint(trackId)
+func (r *repository) GetContents(ctx context.Context, c *[]content.Content, condition *GetContentsCondition) error {
+	err := r.db.WithContext(ctx).
+		Preload("Questions").
+		Preload("Questions.AnswerChoices").
+		Where(&condition).
+		Find(&c).
+		Error
 
-	if err := r.db.WithContext(ctx).Preload("Questions").Preload("Questions.AnswerChoices").Where(&condition).Find(&c).Error; err != nil {
+	if err != nil {
 		return err
 	}
 
