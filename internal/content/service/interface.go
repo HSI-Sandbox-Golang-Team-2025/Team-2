@@ -11,7 +11,6 @@ type Service interface {
 	GetContent(ctx context.Context, paramId string) (*content.Content, error)
 
 	CreateContent(ctx context.Context, c content.Content) (*content.Content, error)
-	GetAllContent(ctx context.Context, queries map[string]string) (*[]content.Content, error)
 	UpdateContent(ctx context.Context, c content.Content) error
 	DeleteContent(ctx context.Context, id int64) error
 }

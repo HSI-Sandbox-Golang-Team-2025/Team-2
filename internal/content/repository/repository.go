@@ -64,16 +64,6 @@ func (r *repository) CreateContent(ctx context.Context, c *content.Content) erro
 	return nil
 }
 
-// BATAS
-
-func (r *repository) GetAllContent(ctx context.Context) ([]content.Content, error) {
-	var contentList []content.Content
-	if err := r.db.WithContext(ctx).Find(&contentList).Error; err != nil {
-		return nil, err
-	}
-	return contentList, nil
-}
-
 func (r *repository) UpdateContent(ctx context.Context, c content.Content) error {
 	return r.db.WithContext(ctx).Save(&c).Error
 }

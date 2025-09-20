@@ -36,16 +36,6 @@ func (s *service) GetContents(ctx context.Context, queries map[string]string) (*
 	return &contents, nil
 }
 
-func (s *service) GetAllContent(ctx context.Context, queries map[string]string) (*[]content.Content, error) {
-	contents := []content.Content{}
-
-	if err := s.repo.GetContents(ctx, &contents, queries); err != nil {
-		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	}
-
-	return &contents, nil
-}
-
 func (s *service) GetContent(ctx context.Context, paramId string) (*content.Content, error) {
 	contents := content.Content{}
 
@@ -55,8 +45,6 @@ func (s *service) GetContent(ctx context.Context, paramId string) (*content.Cont
 
 	return &contents, nil
 }
-
-// BATAS
 
 func (s *service) CreateContent(ctx context.Context, c content.Content) (*content.Content, error) {
 	c.Type = content.ContentTypeMaterial
