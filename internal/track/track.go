@@ -1,12 +1,12 @@
 package track
 
-import "gorm.io/gorm"
+import (
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
+	"gorm.io/gorm"
+)
 
 type Track struct {
 	gorm.Model
-	Name string `json:"name" gorm:"column:name"`
-}
-
-func (Track) TableName() string {
-	return "tracks"
+	Name     string             `json:"name"`
+	Contents *[]content.Content `json:"-"`
 }

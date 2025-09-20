@@ -7,7 +7,10 @@ import (
 )
 
 type Repository interface {
-	CreateContent(ctx context.Context, c content.Content) (*content.Content, error)
+	GetContents(ctx context.Context, c *[]content.Content, queries map[string]string) error
+	GetContent(ctx context.Context, c *content.Content, paramId string) error
+	CreateContent(ctx context.Context, c *content.Content) error
+
 	GetContentByID(ctx context.Context, id int64) (*content.Content, error)
 	GetAllContent(ctx context.Context) ([]content.Content, error)
 	UpdateContent(ctx context.Context, c content.Content) error

@@ -1,14 +1,24 @@
 package content
 
-import "gorm.io/gorm"
+import (
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/basic_model"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/question"
+)
 
 type Content struct {
-	gorm.Model
-	TrackID uint   `json:"track_id" gorm:"column:track_id"`
-	Order   int    `json:"order" gorm:"column:order"`
-	Type    string `json:"type" gorm:"column:type"`
+	basic_model.BasicModel
+	TrackID   uint                 `json:"trackId"`
+	Title     string               `json:"title"`
+	Body      string               `json:"body"`
+	Type      ContentType          `json:"type" gorm:"type:content_types"`
+	Order     uint                 `json:"order"`
+	Questions *[]question.Question `json:"questions"`
 }
 
-func (Content) TableName() string {
-	return "contents"
-}
+type ContentType string
+
+const (
+	ContentTypeMaterial ContentType = "material"
+	ContentTypePractice ContentType = "practice"
+	ContentTypeProject  ContentType = "project"
+)

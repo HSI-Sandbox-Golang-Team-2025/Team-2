@@ -3,22 +3,37 @@ package service
 import (
 	"context"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/material"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/material/repository"
+
+	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/repository"
+	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
-	repository repository.Repository
+	repository  repository.Repository
+	contentRepo contentRepository.Repository
 }
 
-func NewService(r repository.Repository) Service {
+func NewService(
+	repository repository.Repository,
+	contentRepo contentRepository.Repository,
+) Service {
 	return &service{
-		repository: r,
+		repository:  repository,
+		contentRepo: contentRepo,
 	}
 }
 
-func (s *service) CreateMaterial(ctx context.Context, m material.Material) (*material.Material, error) {
-	return s.repository.CreateMaterial(ctx, m)
+func (s *service) CreateMaterial(ctx context.Context, c content.Content) (*content.Content, error) {
+	c.Type = content.ContentTypeMaterial
+
+	if err := s.contentRepo.CreateContent(ctx, &c); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &c, nil
 }
 
 func (s *service) GetMaterialByID(ctx context.Context, id int64) (*material.Material, error) {

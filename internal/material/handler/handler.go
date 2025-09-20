@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"context"
+
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/material"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/material/service"
 	"github.com/gofiber/fiber/v2"
@@ -12,23 +15,33 @@ type handler struct {
 
 func NewHandler(app fiber.Router, s service.Service) {
 	h := &handler{materialService: s}
-	app.Post("/materials", h.CreateMaterial)
-	app.Get("/materials/:id", h.GetMaterialByID)
-	app.Get("/materials", h.GetAllMaterial)
-	app.Put("/materials/:id", h.UpdateMaterial)
-	app.Delete("/materials/:id", h.DeleteMaterial)
+
+	group := app.Group("/materials")
+
+	group.Post("/", h.CreateMaterial)
+	group.Get("/:id", h.GetMaterialByID)
+	group.Get("/", h.GetAllMaterial)
+	group.Put("/:id", h.UpdateMaterial)
+	group.Delete("/:id", h.DeleteMaterial)
 }
 
 func (h *handler) CreateMaterial(c *fiber.Ctx) error {
-	var req material.Material
+	var req content.Content
+
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return err
 	}
-	result, err := h.materialService.CreateMaterial(c.Context(), req)
+
+	data, err := h.materialService.CreateMaterial(context.Background(), req)
+
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return err
 	}
-	return c.Status(fiber.StatusCreated).JSON(result)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Create material success!",
+		"data":    data,
+	})
 }
 
 func (h *handler) GetMaterialByID(c *fiber.Ctx) error {
