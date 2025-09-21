@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
 	"gorm.io/gorm"
@@ -17,7 +16,7 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 type GetContentsCondition struct {
-	TrackId uint
+	TrackID uint
 	Type    content.ContentType
 }
 
@@ -35,13 +34,25 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 	return nil
 }
 
-func (r *repository) GetContent(ctx context.Context, c *content.Content, paramId string) error {
-	id, _ := strconv.Atoi(paramId)
+type GetContentCondition struct {
+	ID     uint
+	UserID uint
+}
 
-	condition := content.Content{}
-	condition.ID = uint(id)
+func (r *repository) GetContent(
+	ctx context.Context,
+	c *content.Content,
+	condition *GetContentCondition,
+) error {
+	err := r.db.WithContext(ctx).
+		Preload("Questions").
+		Preload("Questions.AnswerChoices").
+		Joins("JOIN user_tracks ut ON ut.track_id = contents.track_id AND ut.user_id = ?", condition.UserID).
+		Where("contents.id = ?", condition.ID).
+		First(&c).
+		Error
 
-	if err := r.db.WithContext(ctx).Preload("Questions").Preload("Questions.AnswerChoices").Where(&condition).First(&c).Error; err != nil {
+	if err != nil {
 		return err
 	}
 

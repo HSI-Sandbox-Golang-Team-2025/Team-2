@@ -8,7 +8,7 @@ import (
 
 type Repository interface {
 	GetContents(ctx context.Context, c *[]content.Content, condition *GetContentsCondition) error
-	GetContent(ctx context.Context, c *content.Content, paramId string) error
+	GetContent(ctx context.Context, c *content.Content, condition *GetContentCondition) error
 	CreateContent(ctx context.Context, c *content.Content) error
 
 	GetContentByID(ctx context.Context, id int64) (*content.Content, error)
