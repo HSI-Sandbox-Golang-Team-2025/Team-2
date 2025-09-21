@@ -39,7 +39,16 @@ func (s *service) GetContents(ctx context.Context, queries map[string]string) (*
 func (s *service) GetContent(ctx context.Context, paramId string) (*content.Content, error) {
 	contents := content.Content{}
 
-	if err := s.repo.GetContent(ctx, &contents, paramId); err != nil {
+	userId := uint(15) // Temporary
+
+	id, _ := strconv.Atoi(paramId)
+
+	condition := repository.GetContentCondition{
+		ID:     uint(id),
+		UserID: userId,
+	}
+
+	if err := s.repo.GetContent(ctx, &contents, &condition); err != nil {
 		return nil, fiber.NewError(fiber.StatusNotFound, "Content not found!")
 	}
 
