@@ -35,6 +35,7 @@ import (
 	userProjectRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_project/repository"
 	userProjectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_project/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_project_media"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_track"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 	"gorm.io/driver/postgres"
@@ -109,6 +110,7 @@ func main() {
 		&user_practice_record.UserPracticeRecord{},
 		&user_project.UserProject{},
 		&user_project_media.UserProjectMedia{},
+		&user_track.UserTrack{},
 	)
 
 	if err != nil {
