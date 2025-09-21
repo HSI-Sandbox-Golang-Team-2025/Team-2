@@ -25,7 +25,7 @@ func (s *service) GetContents(ctx context.Context, queries map[string]string) (*
 	trackId, _ := strconv.Atoi(queries["trackId"])
 
 	condition := repository.GetContentsCondition{
-		TrackId: uint(trackId),
+		TrackID: uint(trackId),
 		Type:    content.ContentType(queries["type"]),
 	}
 

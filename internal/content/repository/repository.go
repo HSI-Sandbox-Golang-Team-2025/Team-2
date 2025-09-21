@@ -16,7 +16,7 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 type GetContentsCondition struct {
-	TrackId uint
+	TrackID uint
 	Type    content.ContentType
 }
 
