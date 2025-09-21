@@ -8,8 +8,8 @@ import (
 
 type UserTrack struct {
 	basic_model.BasicModel
-	UserId  uint        `json:"userId"`
+	UserID  uint        `json:"userId"`
 	User    user.User   `json:"user"`
-	TrackId uint        `json:"trackId"`
+	TrackID uint        `json:"trackId"`
 	Track   track.Track `json:"track"`
 }
