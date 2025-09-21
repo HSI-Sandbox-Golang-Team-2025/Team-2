@@ -45,3 +45,21 @@ func (s *service) GetContent(ctx context.Context, paramId string) (*content.Cont
 
 	return &contents, nil
 }
+
+func (s *service) CreateContent(ctx context.Context, c content.Content) (*content.Content, error) {
+	c.Type = content.ContentTypeMaterial
+
+	if err := s.repo.CreateContent(ctx, &c); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &c, nil
+}
+
+func (s *service) UpdateContent(ctx context.Context, c content.Content) error {
+	return s.repo.UpdateContent(ctx, c)
+}
+
+func (s *service) DeleteContent(ctx context.Context, id int64) error {
+	return s.repo.DeleteContent(ctx, id)
+}

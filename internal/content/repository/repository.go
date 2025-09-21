@@ -49,9 +49,25 @@ func (r *repository) GetContent(ctx context.Context, c *content.Content, paramId
 	return nil
 }
 
+func (r *repository) GetContentByID(ctx context.Context, id int64) (*content.Content, error) {
+	var c content.Content
+	if err := r.db.WithContext(ctx).First(&c, id).Error; err != nil {
+		return nil, err
+	}
+	return &c, nil
+}
+
 func (r *repository) CreateContent(ctx context.Context, c *content.Content) error {
 	if err := r.db.WithContext(ctx).Create(&c).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+func (r *repository) UpdateContent(ctx context.Context, c content.Content) error {
+	return r.db.WithContext(ctx).Save(&c).Error
+}
+
+func (r *repository) DeleteContent(ctx context.Context, id int64) error {
+	return r.db.WithContext(ctx).Delete(&content.Content{}, id).Error
 }
