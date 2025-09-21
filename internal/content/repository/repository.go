@@ -23,8 +23,7 @@ type GetContentsCondition struct {
 
 func (r *repository) GetContents(ctx context.Context, c *[]content.Content, condition *GetContentsCondition) error {
 	err := r.db.WithContext(ctx).
-		Preload("Questions").
-		Preload("Questions.AnswerChoices").
+		Select("*, 'Hidden' as \"body\"").
 		Where(&condition).
 		Find(&c).
 		Error
