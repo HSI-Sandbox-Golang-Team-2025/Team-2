@@ -15,6 +15,16 @@ func NewRepository(db *gorm.DB) Repository {
 	return &repository{db: db}
 }
 
+func (r *repository) OpenUserPractice(
+	ctx context.Context,
+	up *user_practice.UserPractice,
+) error {
+	if err := r.db.WithContext(ctx).Create(&up).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *repository) StartUserPractice(
 	ctx context.Context,
 	up *user_practice.UserPractice,
@@ -27,6 +37,8 @@ func (r *repository) StartUserPractice(
 
 type GetUserPracticeCondition struct {
 	ID                    uint
+	UserID                uint
+	ContentID             uint
 	Status                user_practice.UserPracticeStatus
 	UserPracticeRecordIds []uint
 }

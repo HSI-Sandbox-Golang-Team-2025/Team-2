@@ -92,7 +92,8 @@ func main() {
 
 	db.Exec(
 		fmt.Sprintf(
-			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s');",
+			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s', '%s');",
+			user_practice.Opened,
 			user_practice.InProgress,
 			user_practice.Submitted,
 			user_practice.Reviewed,
@@ -129,7 +130,7 @@ func main() {
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
-	contentSvc := contentService.NewService(contentRepo)
+	contentSvc := contentService.NewService(contentRepo, userPracticeRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
 	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
