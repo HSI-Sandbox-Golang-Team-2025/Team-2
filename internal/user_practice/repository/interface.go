@@ -7,6 +7,10 @@ import (
 )
 
 type Repository interface {
+	OpenUserPractice(
+		ctx context.Context,
+		up *user_practice.UserPractice,
+	) error
 	StartUserPractice(ctx context.Context, up *user_practice.UserPractice) error
 	UpdateUserPractice(ctx context.Context, up *user_practice.UserPractice) error
 	GetUserPractices(
