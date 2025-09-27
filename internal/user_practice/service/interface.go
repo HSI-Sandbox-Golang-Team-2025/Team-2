@@ -9,7 +9,7 @@ import (
 type Service interface {
 	StartUserPractice(
 		ctx context.Context,
-		up user_practice.UserPractice,
+		paramId string,
 	) (*user_practice.UserPractice, error)
 	SubmitUserPractice(
 		ctx context.Context,

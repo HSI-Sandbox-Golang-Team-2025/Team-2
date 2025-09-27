@@ -19,8 +19,8 @@ func NewHandler(app fiber.Router, s service.Service) {
 
 	group := app.Group("/user-practices")
 
-	group.Post("/", h.StartUserPractice)
 	group.Get("/", h.GetUserPractices)
+	group.Patch("/:id/start", h.StartUserPractice)
 	group.Patch("/:id/submit", h.SubmitUserPractice)
 	group.Patch("/:id/review", h.ReviewUserPractice)
 }
@@ -34,22 +34,16 @@ func NewHandler(app fiber.Router, s service.Service) {
 // @Param credentials body LoginBody true "Login credentials"
 // @Success 200 {object} SuccessLoginResponse "Get content success!"
 // @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
-// @Router /practices [post]
-func (h *handler) StartUserPractice(c *fiber.Ctx) error {
-	var body user_practice.UserPractice
-
-	if err := c.BodyParser(&body); err != nil {
-		return err
-	}
-
-	data, err := h.service.StartUserPractice(context.Background(), body)
+// @Router /user-practices [get]
+func (h *handler) GetUserPractices(c *fiber.Ctx) error {
+	data, err := h.service.GetUserPractices(context.Background(), c.Queries())
 
 	if err != nil {
 		return err
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Create user practice success!",
+		"message": "Get user practices success!",
 		"data":    data,
 	})
 }
@@ -63,16 +57,16 @@ func (h *handler) StartUserPractice(c *fiber.Ctx) error {
 // @Param credentials body LoginBody true "Login credentials"
 // @Success 200 {object} SuccessLoginResponse "Get content success!"
 // @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
-// @Router /practices [get]
-func (h *handler) GetUserPractices(c *fiber.Ctx) error {
-	data, err := h.service.GetUserPractices(context.Background(), c.Queries())
+// @Router /user-practices/:id/start [patch]
+func (h *handler) StartUserPractice(c *fiber.Ctx) error {
+	data, err := h.service.StartUserPractice(context.Background(), c.Params("id"))
 
 	if err != nil {
 		return err
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Get practices success!",
+		"message": "Create user practice success!",
 		"data":    data,
 	})
 }
