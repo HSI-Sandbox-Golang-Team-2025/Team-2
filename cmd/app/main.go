@@ -37,10 +37,11 @@ import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_project_media"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_track"
 	"github.com/gofiber/fiber/v2"
+	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	gormLogger "gorm.io/gorm/logger"
 )
 
 // @title Learning Platform
@@ -74,7 +75,7 @@ func main() {
 	})
 
 	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
 
 	if err != nil {
@@ -117,6 +118,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Auto migration failed ", err)
 	}
+
+	app.Use(fiberLogger.New())
 
 	route := app.Group("/api")
 
