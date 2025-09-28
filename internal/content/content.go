@@ -7,12 +7,13 @@ import (
 
 type Content struct {
 	basic_model.BasicModel
-	TrackID   uint                 `json:"trackId"`
-	Title     string               `json:"title"`
-	Body      string               `json:"body"`
-	Type      ContentType          `json:"type" gorm:"type:content_types"`
-	Order     uint                 `json:"order"`
-	Questions *[]question.Question `json:"questions"`
+	TrackID     uint                 `json:"trackId"`
+	Title       string               `json:"title"`
+	Body        string               `json:"body"`
+	Type        ContentType          `json:"type" gorm:"type:content_types"`
+	Order       uint                 `json:"order"`
+	Questions   *[]question.Question `json:"questions"`
+	IsCompleted bool                 `json:"isCompleted" gorm:"-:migration"`
 }
 
 type ContentType string

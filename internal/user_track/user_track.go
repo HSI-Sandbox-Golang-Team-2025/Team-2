@@ -1,15 +1,15 @@
 package user_track
 
 import (
-	"gorm.io/gorm"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/basic_model"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/track"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user"
 )
 
 type UserTrack struct {
-	gorm.Model
-	UserID  uint `json:"user_id" gorm:"column:user_id"`
-	TrackID uint `json:"track_id" gorm:"column:track_id"`
-}
-
-func (UserTrack) TableName() string {
-	return "user_tracks"
+	basic_model.BasicModel
+	UserID  uint        `json:"userId"`
+	User    user.User   `json:"user"`
+	TrackID uint        `json:"trackId"`
+	Track   track.Track `json:"track"`
 }

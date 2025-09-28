@@ -29,15 +29,30 @@ func NewService(
 
 func (s *service) StartUserPractice(
 	ctx context.Context,
-	up user_practice.UserPractice,
+	paramId string,
 ) (*user_practice.UserPractice, error) {
-	userPractice := user_practice.UserPractice{
-		UserID:    up.UserID,
-		ContentID: up.ContentID,
-		Status:    user_practice.InProgress,
+	userPractice := user_practice.UserPractice{}
+
+	id, _ := strconv.Atoi(paramId)
+
+	condition := repository.GetUserPracticeCondition{
+		ID:     uint(id),
+		Status: user_practice.Opened,
 	}
 
-	err := s.userPracticeRepo.StartUserPractice(ctx, &userPractice)
+	err := s.userPracticeRepo.GetUserPractice(
+		ctx,
+		&userPractice,
+		&condition,
+	)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, "User practice not found!")
+	}
+
+	userPractice.Status = user_practice.InProgress
+
+	err = s.userPracticeRepo.UpdateUserPractice(ctx, &userPractice)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())

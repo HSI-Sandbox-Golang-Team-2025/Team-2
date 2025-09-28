@@ -1,12 +1,12 @@
 package track
 
 import (
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/basic_model"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
-	"gorm.io/gorm"
 )
 
 type Track struct {
-	gorm.Model
+	basic_model.BasicModel
 	Name     string             `json:"name"`
 	Contents *[]content.Content `json:"-"`
 }

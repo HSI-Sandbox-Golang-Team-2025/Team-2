@@ -6,16 +6,20 @@ import (
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/content/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice"
+	userPracticeRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_practice/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
-	repo repository.Repository
+	contentRepo      repository.Repository
+	userPracticeRepo userPracticeRepo.Repository
 }
 
-func NewService(practiceRepo repository.Repository) Service {
+func NewService(contentRepo repository.Repository, userPracticeRepo userPracticeRepo.Repository) Service {
 	return &service{
-		repo: practiceRepo,
+		contentRepo:      contentRepo,
+		userPracticeRepo: userPracticeRepo,
 	}
 }
 
@@ -24,12 +28,16 @@ func (s *service) GetContents(ctx context.Context, queries map[string]string) (*
 
 	trackId, _ := strconv.Atoi(queries["trackId"])
 
+	userId := uint(15) // Temporary
+
 	condition := repository.GetContentsCondition{
-		TrackId: uint(trackId),
-		Type:    content.ContentType(queries["type"]),
+		TrackID:  uint(trackId),
+		Type:     content.ContentType(queries["type"]),
+		UserID:   userId,
+		HideBody: true,
 	}
 
-	if err := s.repo.GetContents(ctx, &contents, &condition); err != nil {
+	if err := s.contentRepo.GetContents(ctx, &contents, &condition); err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -37,19 +45,68 @@ func (s *service) GetContents(ctx context.Context, queries map[string]string) (*
 }
 
 func (s *service) GetContent(ctx context.Context, paramId string) (*content.Content, error) {
-	contents := content.Content{}
+	contentRes := content.Content{}
 
-	if err := s.repo.GetContent(ctx, &contents, paramId); err != nil {
+	userId := uint(15) // Temporary
+
+	id, _ := strconv.Atoi(paramId)
+
+	condition := repository.GetContentCondition{
+		ID:     uint(id),
+		UserID: userId,
+	}
+
+	if err := s.contentRepo.GetContent(ctx, &contentRes, &condition); err != nil {
 		return nil, fiber.NewError(fiber.StatusNotFound, "Content not found!")
 	}
 
-	return &contents, nil
+	if contentRes.Order > 1 {
+		prevCompletedContents := []content.Content{}
+
+		getPrevCompletedContentsCondition := repository.GetContentsCondition{
+			TrackID:       contentRes.TrackID,
+			OrderBefore:   contentRes.Order,
+			UserID:        userId,
+			OnlyCompleted: true,
+		}
+
+		if err := s.contentRepo.GetContents(ctx, &prevCompletedContents, &getPrevCompletedContentsCondition); err != nil {
+			return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		}
+
+		// Is last contents completed?
+		if len(prevCompletedContents) != int(contentRes.Order-1) {
+			return nil, fiber.NewError(fiber.StatusForbidden, "Previous content is not completed yet!")
+		}
+	}
+
+	if contentRes.Type == content.ContentTypePractice {
+		userPractice := user_practice.UserPractice{}
+
+		getUserPracticeCondition := userPracticeRepo.GetUserPracticeCondition{
+			UserID:    userId,
+			ContentID: contentRes.ID,
+			Status:    user_practice.Opened,
+		}
+
+		err := s.userPracticeRepo.GetUserPractice(ctx, &userPractice, &getUserPracticeCondition)
+
+		if err != nil && err.Error() == "record not found" {
+			userPractice.UserID = userId
+			userPractice.ContentID = contentRes.ID
+			userPractice.Status = user_practice.Opened
+
+			s.userPracticeRepo.OpenUserPractice(ctx, &userPractice)
+		}
+	}
+
+	return &contentRes, nil
 }
 
 func (s *service) CreateContent(ctx context.Context, c content.Content) (*content.Content, error) {
 	c.Type = content.ContentTypeMaterial
 
-	if err := s.repo.CreateContent(ctx, &c); err != nil {
+	if err := s.contentRepo.CreateContent(ctx, &c); err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -57,9 +114,9 @@ func (s *service) CreateContent(ctx context.Context, c content.Content) (*conten
 }
 
 func (s *service) UpdateContent(ctx context.Context, c content.Content) error {
-	return s.repo.UpdateContent(ctx, c)
+	return s.contentRepo.UpdateContent(ctx, c)
 }
 
 func (s *service) DeleteContent(ctx context.Context, id int64) error {
-	return s.repo.DeleteContent(ctx, id)
+	return s.contentRepo.DeleteContent(ctx, id)
 }
