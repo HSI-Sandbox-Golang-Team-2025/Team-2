@@ -37,7 +37,8 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 
 	db = db.
 		Joins("LEFT JOIN user_practices ON user_practices.content_id = contents.id AND user_practices.status = 'reviewed' AND user_practices.user_id = ?", condition.UserID).
-		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID)
+		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID).
+		Preload("UserPractices", "user_id = ?", condition.UserID)
 
 	if condition.Type != "" {
 		db = db.Where("contents.type = ?", condition.Type)
@@ -82,6 +83,7 @@ func (r *repository) GetContent(
 		Joins("JOIN user_tracks ut ON ut.track_id = contents.track_id AND ut.user_id = ?", condition.UserID).
 		Joins("LEFT JOIN user_practices ON user_practices.content_id = contents.id AND user_practices.status = 'reviewed' AND user_practices.user_id = ?", condition.UserID).
 		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID).
+		Preload("UserPractices", "user_id = ?", condition.UserID).
 		// Preload("Questions").
 		// Preload("Questions.AnswerChoices").
 		Where("contents.id = ?", condition.ID).
