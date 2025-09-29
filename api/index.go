@@ -1,8 +1,9 @@
-package main
+package handler
 
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
@@ -16,11 +17,6 @@ import (
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
 	projectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/service"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question_answer_choice"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
@@ -28,21 +24,22 @@ import (
 	userPracticeHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/handler"
 	userPracticeRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
 	userPracticeService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/service"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record"
 	userPracticeRecordRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record/repository"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project"
 	userProjectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/handler"
 	userProjectRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/repository"
 	userProjectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/service"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project_media"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	gormLogger "gorm.io/gorm/logger"
 )
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+	r.RequestURI = r.URL.String()
+	handler().ServeHTTP(w, r)
+}
 
 // @title Learning Platform
 // @version 1.0
@@ -54,7 +51,7 @@ import (
 // @in header
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
-func main() {
+func handler() http.HandlerFunc {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
@@ -74,8 +71,14 @@ func main() {
 		},
 	})
 
-	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{
-		Logger: gormLogger.Default.LogMode(gormLogger.Info),
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"message": "Welcome!",
+		})
+	})
+
+	db, err := gorm.Open(postgres.Open("postgresql://learning_platform_jrke_user:2IBrCpndKXHWQrPIBaqtFkit4kx24LAG@dpg-d3cl8jndiees738313og-a.singapore-postgres.render.com/learning_platform_jrke"), &gorm.Config{
+		// Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
 
 	if err != nil {
@@ -101,23 +104,23 @@ func main() {
 		),
 	)
 
-	err = db.AutoMigrate(
-		&content.Content{},
-		&question.Question{},
-		&question_answer_choice.QuestionAnswerChoice{},
-		&role.Role{},
-		&track.Track{},
-		&user.User{},
-		&user_practice.UserPractice{},
-		&user_practice_record.UserPracticeRecord{},
-		&user_project.UserProject{},
-		&user_project_media.UserProjectMedia{},
-		&user_track.UserTrack{},
-	)
+	// err = db.AutoMigrate(
+	// 	&track.Track{},
+	// 	&content.Content{},
+	// 	&question.Question{},
+	// 	&question_answer_choice.QuestionAnswerChoice{},
+	// 	&role.Role{},
+	// 	&user.User{},
+	// 	&user_practice.UserPractice{},
+	// 	&user_practice_record.UserPracticeRecord{},
+	// 	&user_project.UserProject{},
+	// 	&user_project_media.UserProjectMedia{},
+	// 	&user_track.UserTrack{},
+	// )
 
-	if err != nil {
-		log.Fatal("Auto migration failed ", err)
-	}
+	// if err != nil {
+	// 	log.Fatal("Auto migration failed ", err)
+	// }
 
 	app.Use(fiberLogger.New())
 
@@ -151,5 +154,5 @@ func main() {
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	app.Listen(":3000")
+	return adaptor.FiberApp(app)
 }
