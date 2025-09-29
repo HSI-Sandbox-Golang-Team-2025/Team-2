@@ -6,7 +6,7 @@ import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/auth/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user"
 	uRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user/repository"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -33,13 +33,13 @@ func (s *service) Login(ctx context.Context, u user.User) (*string, error) {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid credentials!")
 	}
 
-	isValid := pkg.CompareHashPassword(u.Password, user.Password)
+	isValid := lib.CompareHashPassword(u.Password, user.Password)
 
 	if !isValid {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid credentials!")
 	}
 
-	token, err := pkg.CreateJWT(user.ID)
+	token, err := lib.CreateJWT(user.ID)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
@@ -55,7 +55,7 @@ func (s *service) Register(ctx context.Context, u user.User) (*string, error) {
 
 	u.RoleID = 3 // Santri
 
-	hashedPassword, err := pkg.HashPassword(u.Password)
+	hashedPassword, err := lib.HashPassword(u.Password)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
@@ -69,7 +69,7 @@ func (s *service) Register(ctx context.Context, u user.User) (*string, error) {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	token, err := pkg.CreateJWT(user.ID)
+	token, err := lib.CreateJWT(user.ID)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
