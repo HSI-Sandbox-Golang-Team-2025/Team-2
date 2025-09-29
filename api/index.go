@@ -77,7 +77,7 @@ func handler() http.HandlerFunc {
 		})
 	})
 
-	db, err := gorm.Open(postgres.Open("postgresql://learning_platform_jrke_user:2IBrCpndKXHWQrPIBaqtFkit4kx24LAG@dpg-d3cl8jndiees738313og-a.singapore-postgres.render.com/learning_platform_jrke"), &gorm.Config{
+	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{
 		// Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
 
