@@ -96,6 +96,7 @@ func (s *service) GetContent(ctx context.Context, paramId string) (*content.Cont
 			userPractice.ContentID = contentRes.ID
 			userPractice.Status = user_practice.Opened
 
+			// CHECK: Kalo dia ujian berkali-kali gimana? apakah masih ada status opened?
 			s.userPracticeRepo.OpenUserPractice(ctx, &userPractice)
 		}
 	}
