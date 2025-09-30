@@ -1,4 +1,4 @@
-package user_materials
+package user_material
 
 import (
 	"gorm.io/gorm"

@@ -1,10 +1,9 @@
 package handler
 
 import (
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material/service"
 	"github.com/gofiber/fiber/v2"
-
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_materials"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_materials/service"
 )
 
 type handler struct {
@@ -22,7 +21,7 @@ func NewHandler(app fiber.Router, s service.UserMaterialService) {
 }
 
 func (h *handler) CreateUserMaterial(c *fiber.Ctx) error {
-	var req user_materials.UserMaterial
+	var req user_material.UserMaterial
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -57,7 +56,7 @@ func (h *handler) UpdateUserMaterial(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var req user_materials.UserMaterial
+	var req user_material.UserMaterial
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
