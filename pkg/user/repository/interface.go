@@ -7,5 +7,6 @@ import (
 )
 
 type Repository interface {
-	CreateUser(ctx context.Context, u user.User) (*user.User, error)
+	GetUser(ctx context.Context, u *user.User, condition *FindUserCondition) error
+	CreateUser(ctx context.Context, u *user.User) error
 }

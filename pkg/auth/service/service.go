@@ -22,24 +22,29 @@ func NewService(authRepo repository.Repository, userRepo uRepository.Repository)
 	}
 }
 
-func (s *service) Login(ctx context.Context, u user.User) (*string, error) {
-	if u.Nip == "" || u.Password == "" {
+func (s *service) Login(ctx context.Context, body user.User) (*string, error) {
+	if body.Nip == "" || body.Password == "" {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid credentials!")
 	}
 
-	user, err := s.repo.GetUser(ctx, u)
+	u := user.User{}
 
-	if user == nil || err != nil {
+	condition := uRepository.FindUserCondition{}
+	condition.Nip = body.Nip
+
+	err := s.userRepo.GetUser(ctx, &u, &condition)
+
+	if err != nil {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid credentials!")
 	}
 
-	isValid := lib.CompareHashPassword(u.Password, user.Password)
+	isValid := lib.CompareHashPassword(body.Password, u.Password)
 
 	if !isValid {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid credentials!")
 	}
 
-	token, err := lib.CreateJWT(user.ID)
+	token, err := lib.CreateJWT(u.ID)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
@@ -48,11 +53,14 @@ func (s *service) Login(ctx context.Context, u user.User) (*string, error) {
 	return &token, nil
 }
 
-func (s *service) Register(ctx context.Context, u user.User) (*string, error) {
-	if u.Nip == "" || u.Password == "" || u.Name == "" {
+func (s *service) Register(ctx context.Context, body user.User) (*string, error) {
+	if body.Nip == "" || body.Password == "" || body.Name == "" {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid request!")
 	}
 
+	u := user.User{}
+
+	u.Nip = body.Nip
 	u.RoleID = 3 // Santri
 
 	hashedPassword, err := lib.HashPassword(u.Password)
@@ -63,13 +71,13 @@ func (s *service) Register(ctx context.Context, u user.User) (*string, error) {
 
 	u.Password = hashedPassword
 
-	user, err := s.userRepo.CreateUser(ctx, u)
+	err = s.userRepo.CreateUser(ctx, &u)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	token, err := lib.CreateJWT(user.ID)
+	token, err := lib.CreateJWT(u.ID)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
