@@ -5,6 +5,7 @@ import (
 	"log"
 
 	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
 	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
 	authService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/service"
@@ -39,6 +40,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
@@ -74,7 +76,12 @@ func main() {
 		},
 	})
 
-	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/learning_platform"), &gorm.Config{
+	godotenv.Load()
+
+	dbConfig := lib.GetDBConfig()
+	dsn := dbConfig.GetDSN()
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
 
