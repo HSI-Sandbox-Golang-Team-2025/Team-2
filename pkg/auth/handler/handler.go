@@ -62,23 +62,19 @@ func (h *handler) Login(c *fiber.Ctx) error {
 // @Produce json
 // @Param request body RegisterBody true "New user data"
 // @Success 200 {object} SuccessRegisterResponse "Registration success!"
-// @Failure 400 {object} InvalidRegisterResponse "Registration failed!"
+// @Failure 400 {object} InvalidRegisterResponse "[Error message]"
 // @Router /auth/register [post]
 func (h *handler) Register(c *fiber.Ctx) error {
 	var body user.User
 
 	if err := c.BodyParser(&body); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return err
 	}
 
 	data, err := h.service.Register(context.Background(), body)
 
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return err
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
