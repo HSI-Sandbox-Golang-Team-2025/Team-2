@@ -28,7 +28,7 @@ func NewHandler(app fiber.Router, s service.Service) {
 // startUserProject godoc
 // @Summary Start user project
 // @Description Authenticate user with static credentials and return JWT token
-// @Tags Authentication
+// @Tags Backlog
 // @Accept json
 // @Produce json
 // @Param credentials body LoginBody true "Login credentials"
@@ -57,7 +57,7 @@ func (h *handler) StartUserProject(c *fiber.Ctx) error {
 // getUserProjects godoc
 // @Summary Get user projects
 // @Description Authenticate user with static credentials and return JWT token
-// @Tags Authentication
+// @Tags Backlog
 // @Accept json
 // @Produce json
 // @Param credentials body LoginBody true "Login credentials"
@@ -80,7 +80,7 @@ func (h *handler) GetUserProjects(c *fiber.Ctx) error {
 // submitUserProject godoc
 // @Summary Submit user project
 // @Description Authenticate user with static credentials and return JWT token
-// @Tags Authentication
+// @Tags Backlog
 // @Accept json
 // @Produce json
 // @Param credentials body LoginBody true "Login credentials"
@@ -109,7 +109,7 @@ func (h *handler) SubmitUserProject(c *fiber.Ctx) error {
 // reviewUserProjects godoc
 // @Summary Review user projects
 // @Description Authenticate user with static credentials and return JWT token
-// @Tags Authentication
+// @Tags Backlog
 // @Accept json
 // @Produce json
 // @Param credentials body LoginBody true "Login credentials"

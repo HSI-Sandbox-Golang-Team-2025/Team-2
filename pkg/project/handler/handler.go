@@ -25,7 +25,7 @@ func NewHandler(app fiber.Router, s service.Service) {
 // login godoc
 // @Summary User login
 // @Description Authenticate user with static credentials and return JWT token
-// @Tags Authentication
+// @Tags Backlog
 // @Accept json
 // @Produce json
 // @Param credentials body LoginBody true "Login credentials"
