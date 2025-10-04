@@ -310,7 +310,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Authentication
+      - Backlog
   /projects:
     post:
       consumes:
@@ -336,7 +336,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Authentication
+      - Backlog
   /user-practices:
     get:
       consumes:
@@ -362,7 +362,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Authentication
+      - Backlog
   /user-practices/:id/review:
     patch:
       consumes:
@@ -388,7 +388,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Authentication
+      - Backlog
   /user-practices/:id/start:
     patch:
       consumes:
@@ -414,7 +414,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Authentication
+      - Backlog
   /user-practices/:id/submit:
     patch:
       consumes:
@@ -440,7 +440,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Authentication
+      - Backlog
   /user-projects:
     get:
       consumes:
@@ -466,7 +466,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: Get user projects
       tags:
-      - Authentication
+      - Backlog
     post:
       consumes:
       - application/json
@@ -491,7 +491,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: Start user project
       tags:
-      - Authentication
+      - Backlog
   /user-projects/:id/review:
     patch:
       consumes:
@@ -517,7 +517,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: Review user projects
       tags:
-      - Authentication
+      - Backlog
   /user-projects/:id/submit:
     patch:
       consumes:
@@ -543,7 +543,7 @@ paths:
             $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: Submit user project
       tags:
-      - Authentication
+      - Backlog
 schemes:
 - http
 securityDefinitions:

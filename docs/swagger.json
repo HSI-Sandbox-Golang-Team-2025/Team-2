@@ -167,7 +167,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -207,7 +207,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -247,7 +247,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -287,7 +287,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -327,7 +327,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -367,7 +367,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -407,7 +407,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Get user projects",
                 "parameters": [
@@ -445,7 +445,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Start user project",
                 "parameters": [
@@ -485,7 +485,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Review user projects",
                 "parameters": [
@@ -525,7 +525,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Submit user project",
                 "parameters": [

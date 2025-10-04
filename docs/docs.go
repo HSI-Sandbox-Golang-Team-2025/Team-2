@@ -170,7 +170,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -210,7 +210,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -250,7 +250,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -290,7 +290,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -330,7 +330,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -370,7 +370,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -410,7 +410,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Get user projects",
                 "parameters": [
@@ -448,7 +448,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Start user project",
                 "parameters": [
@@ -488,7 +488,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Review user projects",
                 "parameters": [
@@ -528,7 +528,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authentication"
+                    "Backlog"
                 ],
                 "summary": "Submit user project",
                 "parameters": [
