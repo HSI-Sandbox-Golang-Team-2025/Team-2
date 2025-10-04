@@ -87,9 +87,472 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Registration failed!",
+                        "description": "[Error message]",
                         "schema": {
                             "$ref": "#/definitions/handler.InvalidRegisterResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/contents": {
+            "get": {
+                "description": "Get learning contents (materials, practices and projects)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Get learning contents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "1",
+                        "description": "track.id",
+                        "name": "trackId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get contents success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetContentsSuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/contents/{id}": {
+            "get": {
+                "description": "Get learning content (materials, practices and projects)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Get learning content",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "description": "content.id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetContentSuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/practices": {
+            "post": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects": {
+            "post": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-practices": {
+            "get": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-practices/:id/review": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-practices/:id/start": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-practices/:id/submit": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-projects": {
+            "get": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get user projects",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Start user project",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-projects/:id/review": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Review user projects",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-projects/:id/submit": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Submit user project",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -97,6 +560,91 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "content.Content": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isCompleted": {
+                    "type": "boolean"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "questions": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "trackId": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/content.ContentType"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userPractices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_practice.UserPractice"
+                    }
+                }
+            }
+        },
+        "content.ContentType": {
+            "type": "string",
+            "enum": [
+                "material",
+                "practice",
+                "project"
+            ],
+            "x-enum-varnames": [
+                "ContentTypeMaterial",
+                "ContentTypePractice",
+                "ContentTypeProject"
+            ]
+        },
+        "handler.GetContentSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/content.Content"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Get content success!"
+                }
+            }
+        },
+        "handler.GetContentsSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/content.Content"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Get content success!"
+                }
+            }
+        },
         "handler.InvalidLoginResponse": {
             "type": "object",
             "properties": {
@@ -184,6 +732,100 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Registration success!"
+                }
+            }
+        },
+        "user_practice.UserPractice": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "contentId": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "status": {
+                    "$ref": "#/definitions/user_practice.UserPracticeStatus"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "userPracticeRecords": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_practice_record.UserPracticeRecord"
+                    }
+                }
+            }
+        },
+        "user_practice.UserPracticeStatus": {
+            "type": "string",
+            "enum": [
+                "opened",
+                "in progress",
+                "submitted",
+                "reviewed"
+            ],
+            "x-enum-varnames": [
+                "Opened",
+                "InProgress",
+                "Submitted",
+                "Reviewed"
+            ]
+        },
+        "user_practice_record.UserPracticeRecord": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isCorrect": {
+                    "type": "boolean"
+                },
+                "question": {
+                    "type": "string"
+                },
+                "questionAnswerChoice": {
+                    "type": "string"
+                },
+                "questionAnswerChoiceId": {
+                    "type": "integer"
+                },
+                "questionAnswerText": {
+                    "type": "string"
+                },
+                "questionId": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userPracticeId": {
+                    "type": "integer"
                 }
             }
         }
