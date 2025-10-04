@@ -10,9 +10,9 @@ type UserPracticeRecord struct {
 	basic_model.BasicModel
 	UserPracticeID         uint                                         `json:"userPracticeId"`
 	QuestionID             uint                                         `json:"questionId"`
-	Question               *question.Question                           `json:"question"`
+	Question               *question.Question                           `json:"question" swaggertype:"string" extension:"x-nullable"`
 	QuestionAnswerChoiceID uint                                         `json:"questionAnswerChoiceId"`
-	QuestionAnswerChoice   *question_answer_choice.QuestionAnswerChoice `json:"questionAnswerChoice"`
+	QuestionAnswerChoice   *question_answer_choice.QuestionAnswerChoice `json:"questionAnswerChoice" swaggertype:"string" extension:"x-nullable"`
 	QuestionAnswerText     *string                                      `json:"questionAnswerText"`
 	IsCorrect              *bool                                        `json:"isCorrect"`
 }

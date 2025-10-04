@@ -46,15 +46,14 @@ func (h *handler) CreateContent(c *fiber.Ctx) error {
 	})
 }
 
-// get contents godoc
+// getContents godoc
 // @Summary Get learning contents
 // @Description Get learning contents (materials, practices and projects)
-// @Tags Authentication
+// @Tags Contents
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get contents success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Param trackId query string false "track.id" example(1)
+// @Success 200 {object} GetContentsSuccessResponse "Get contents success!"
 // @Router /contents [get]
 func (h *handler) GetContents(c *fiber.Ctx) error {
 	data, err := h.service.GetContents(context.Background(), c.Queries())
@@ -69,16 +68,15 @@ func (h *handler) GetContents(c *fiber.Ctx) error {
 	})
 }
 
-// get content godoc
-// @Summary Get learning contents
-// @Description Get learning contents (materials, practices and projects)
-// @Tags Authentication
+// getContent godoc
+// @Summary Get learning content
+// @Description Get learning content (materials, practices and projects)
+// @Tags Contents
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get contents success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
-// @Router /contents [get]
+// @Param id path int true "content.id" example(1)
+// @Success 200 {object} GetContentSuccessResponse "Get content success!
+// @Router /contents/{id} [get]
 func (h *handler) GetContent(c *fiber.Ctx) error {
 	data, err := h.service.GetContent(context.Background(), c.Params("id"))
 

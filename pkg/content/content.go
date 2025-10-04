@@ -13,7 +13,7 @@ type Content struct {
 	Body          string                        `json:"body"`
 	Type          ContentType                   `json:"type" gorm:"type:content_types"`
 	Order         uint                          `json:"order"`
-	Questions     *[]question.Question          `json:"questions"`
+	Questions     *[]question.Question          `json:"questions" swaggertype:"string" example:"null" extension:"x-nullable"`
 	IsCompleted   bool                          `json:"isCompleted" gorm:"-:migration"`
 	UserPractices *[]user_practice.UserPractice `json:"userPractices"`
 }

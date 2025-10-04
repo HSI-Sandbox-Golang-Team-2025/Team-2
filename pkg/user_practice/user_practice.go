@@ -9,7 +9,7 @@ import (
 type UserPractice struct {
 	basic_model.BasicModel
 	UserID              uint                                       `json:"userId"`
-	User                *user.User                                 `json:"user"`
+	User                *user.User                                 `json:"user" swaggertype:"string" extension:"x-nullable"`
 	ContentID           uint                                       `json:"contentId"`
 	Status              UserPracticeStatus                         `json:"status" gorm:"type:user_practice_status"`
 	Score               float32                                    `json:"score"`
