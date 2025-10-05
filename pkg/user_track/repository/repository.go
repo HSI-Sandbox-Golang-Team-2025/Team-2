@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_track"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
 	"gorm.io/gorm"
 )
 
@@ -9,7 +9,7 @@ type userTrackRepository struct {
 	DB *gorm.DB
 }
 
-func NewUserTrackRepository(db *gorm.DB) UserTrackRepository {
+func NewRepository(db *gorm.DB) UserTrackRepository {
 	return &userTrackRepository{DB: db}
 }
 

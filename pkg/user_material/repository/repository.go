@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
 	"gorm.io/gorm"
 )
 
@@ -9,7 +9,7 @@ type userMaterialRepository struct {
 	DB *gorm.DB
 }
 
-func NewUserMaterialRepository(db *gorm.DB) UserMaterialRepository {
+func NewRepository(db *gorm.DB) UserMaterialRepository {
 	return &userMaterialRepository{DB: db}
 }
 

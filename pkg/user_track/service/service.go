@@ -1,15 +1,15 @@
 package service
 
 import (
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_track"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_track/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 )
 
 type userTrackService struct {
 	repo repository.UserTrackRepository
 }
 
-func NewUserTrackService(repo repository.UserTrackRepository) UserTrackService {
+func NewService(repo repository.UserTrackRepository) UserTrackService {
 	return &userTrackService{repo: repo}
 }
 

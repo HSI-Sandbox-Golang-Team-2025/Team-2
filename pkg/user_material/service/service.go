@@ -1,15 +1,15 @@
 package service
 
 import (
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
 )
 
 type userMaterialService struct {
 	repo repository.UserMaterialRepository
 }
 
-func NewUserMaterialService(repo repository.UserMaterialRepository) UserMaterialService {
+func NewService(repo repository.UserMaterialRepository) UserMaterialService {
 	return &userMaterialService{repo: repo}
 }
 

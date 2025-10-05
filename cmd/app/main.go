@@ -25,6 +25,9 @@ import (
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
+	userMaterialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/handler"
+	userMaterialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
+	userMaterialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 	userPracticeHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/handler"
 	userPracticeRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
@@ -37,6 +40,9 @@ import (
 	userProjectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project_media"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
+	userTrackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/handler"
+	userTrackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
+	userTrackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/service"
 	"github.com/gofiber/fiber/v2"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
@@ -133,28 +139,34 @@ func main() {
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
+	userMaterialRepo := userMaterialRepository.NewRepository(db)
 	userPracticeRepo := userPracticeRepository.NewRepository(db)
 	userPracticeRecordRepo := userPracticeRecordRepository.NewRepository(db)
 	userProjectRepo := userProjectRepository.NewRepository(db)
 	userRepo := userRepository.NewRepository(db)
+	userTrackRepo := userTrackRepository.NewRepository(db)
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
 	contentSvc := contentService.NewService(contentRepo, userPracticeRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
+	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
 	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
 	userProjectSvc := userProjectService.NewService(userProjectRepo)
 	userSvc := userService.NewService(userRepo)
+	userTrackSvc := userTrackService.NewService(userTrackRepo)
 
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
 	contentHandler.NewHandler(route, contentSvc)
 	practiceHandler.NewHandler(route, practiceSvc)
 	projectHandler.NewHandler(route, projectSvc)
+	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, userPracticeSvc)
 	userProjectHandler.NewHandler(route, userProjectSvc)
 	userHandler.NewHandler(route, userSvc)
+	userTrackHandler.NewHandler(route, userTrackSvc)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 

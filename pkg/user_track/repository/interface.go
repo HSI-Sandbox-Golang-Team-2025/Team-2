@@ -1,8 +1,11 @@
-package service
+package repository
 
-import "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_track"
+import (
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
+)
 
-type UserTrackService interface {
+// Interface untuk repository UserTrack
+type UserTrackRepository interface {
 	Create(userTrack *user_track.UserTrack) error
 	GetByID(id uint) (*user_track.UserTrack, error)
 	Update(userTrack *user_track.UserTrack) error

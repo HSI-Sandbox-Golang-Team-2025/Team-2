@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/internal/user_material/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/service"
 	"github.com/gofiber/fiber/v2"
 )
 
