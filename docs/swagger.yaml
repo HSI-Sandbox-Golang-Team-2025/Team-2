@@ -1,5 +1,63 @@
 basePath: /api
 definitions:
+  content.Content:
+    properties:
+      body:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      isCompleted:
+        type: boolean
+      order:
+        type: integer
+      questions:
+        example: "null"
+        type: string
+      title:
+        type: string
+      trackId:
+        type: integer
+      type:
+        $ref: '#/definitions/content.ContentType'
+      updatedAt:
+        type: string
+      userPractices:
+        items:
+          $ref: '#/definitions/user_practice.UserPractice'
+        type: array
+    type: object
+  content.ContentType:
+    enum:
+    - material
+    - practice
+    - project
+    type: string
+    x-enum-varnames:
+    - ContentTypeMaterial
+    - ContentTypePractice
+    - ContentTypeProject
+  handler.GetContentSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/content.Content'
+      message:
+        example: Get content success!
+        type: string
+    type: object
+  handler.GetContentsSuccessResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/content.Content'
+        type: array
+      message:
+        example: Get content success!
+        type: string
+    type: object
   handler.InvalidLoginResponse:
     properties:
       message:
@@ -61,6 +119,70 @@ definitions:
         example: Registration success!
         type: string
     type: object
+  user_practice.UserPractice:
+    properties:
+      comment:
+        type: string
+      contentId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      score:
+        type: number
+      status:
+        $ref: '#/definitions/user_practice.UserPracticeStatus'
+      updatedAt:
+        type: string
+      user:
+        type: string
+      userId:
+        type: integer
+      userPracticeRecords:
+        items:
+          $ref: '#/definitions/user_practice_record.UserPracticeRecord'
+        type: array
+    type: object
+  user_practice.UserPracticeStatus:
+    enum:
+    - opened
+    - in progress
+    - submitted
+    - reviewed
+    type: string
+    x-enum-varnames:
+    - Opened
+    - InProgress
+    - Submitted
+    - Reviewed
+  user_practice_record.UserPracticeRecord:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      isCorrect:
+        type: boolean
+      question:
+        type: string
+      questionAnswerChoice:
+        type: string
+      questionAnswerChoiceId:
+        type: integer
+      questionAnswerText:
+        type: string
+      questionId:
+        type: integer
+      updatedAt:
+        type: string
+      userPracticeId:
+        type: integer
+    type: object
 host: localhost:3000
 info:
   contact: {}
@@ -114,12 +236,314 @@ paths:
           schema:
             $ref: '#/definitions/handler.SuccessRegisterResponse'
         "400":
-          description: Registration failed!
+          description: '[Error message]'
           schema:
             $ref: '#/definitions/handler.InvalidRegisterResponse'
       summary: User register
       tags:
       - Authentication
+  /contents:
+    get:
+      consumes:
+      - application/json
+      description: Get learning contents (materials, practices and projects)
+      parameters:
+      - description: track.id
+        example: "1"
+        in: query
+        name: trackId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get contents success!
+          schema:
+            $ref: '#/definitions/handler.GetContentsSuccessResponse'
+      summary: Get learning contents
+      tags:
+      - Contents
+  /contents/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get learning content (materials, practices and projects)
+      parameters:
+      - description: content.id
+        example: 1
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.GetContentSuccessResponse'
+      summary: Get learning content
+      tags:
+      - Contents
+  /practices:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /projects:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /user-practices:
+    get:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /user-practices/:id/review:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /user-practices/:id/start:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /user-practices/:id/submit:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /user-projects:
+    get:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: Get user projects
+      tags:
+      - Backlog
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: Start user project
+      tags:
+      - Backlog
+  /user-projects/:id/review:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: Review user projects
+      tags:
+      - Backlog
+  /user-projects/:id/submit:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: Submit user project
+      tags:
+      - Backlog
 schemes:
 - http
 securityDefinitions:

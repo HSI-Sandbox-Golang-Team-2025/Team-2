@@ -1,0 +1,11 @@
+package service
+
+import (
+	"context"
+
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
+)
+
+type Service interface {
+	CreateProject(ctx context.Context, c content.Content) (*content.Content, error)
+}
