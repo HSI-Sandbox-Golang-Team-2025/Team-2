@@ -1,0 +1,42 @@
+package repository
+
+import (
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
+	"gorm.io/gorm"
+)
+
+type userMaterialRepository struct {
+	DB *gorm.DB
+}
+
+func NewRepository(db *gorm.DB) UserMaterialRepository {
+	return &userMaterialRepository{DB: db}
+}
+
+func (r *userMaterialRepository) Create(userMaterial *user_material.UserMaterial) error {
+	return r.DB.Create(userMaterial).Error
+}
+
+func (r *userMaterialRepository) GetByID(id uint) (*user_material.UserMaterial, error) {
+	var um user_material.UserMaterial
+	if err := r.DB.First(&um, id).Error; err != nil {
+		return nil, err
+	}
+	return &um, nil
+}
+
+func (r *userMaterialRepository) Update(userMaterial *user_material.UserMaterial) error {
+	return r.DB.Save(userMaterial).Error
+}
+
+func (r *userMaterialRepository) Delete(id uint) error {
+	return r.DB.Delete(&user_material.UserMaterial{}, id).Error
+}
+
+func (r *userMaterialRepository) List() ([]user_material.UserMaterial, error) {
+	var ums []user_material.UserMaterial
+	if err := r.DB.Find(&ums).Error; err != nil {
+		return nil, err
+	}
+	return ums, nil
+}
