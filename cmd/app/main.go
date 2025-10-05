@@ -21,6 +21,9 @@ import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question_answer_choice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
+	trackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/handler"
+	trackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/repository"
+	trackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
@@ -139,6 +142,7 @@ func main() {
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
+	trackRepo := trackRepository.NewRepository(db)
 	userMaterialRepo := userMaterialRepository.NewRepository(db)
 	userPracticeRepo := userPracticeRepository.NewRepository(db)
 	userPracticeRecordRepo := userPracticeRecordRepository.NewRepository(db)
@@ -151,6 +155,7 @@ func main() {
 	contentSvc := contentService.NewService(contentRepo, userPracticeRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
+	trackSvc := trackService.NewService(trackRepo)
 	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
 	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
 	userProjectSvc := userProjectService.NewService(userProjectRepo)
@@ -167,6 +172,7 @@ func main() {
 	userProjectHandler.NewHandler(route, userProjectSvc)
 	userHandler.NewHandler(route, userSvc)
 	userTrackHandler.NewHandler(route, userTrackSvc)
+	trackHandler.NewHandler(route, trackSvc)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
