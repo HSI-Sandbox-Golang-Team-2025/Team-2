@@ -1,0 +1,117 @@
+package tests
+
+import (
+	"log"
+
+	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
+	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
+	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
+	authService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/service"
+	contentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/handler"
+	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
+	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
+	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
+	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
+	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
+	projectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/service"
+	trackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/handler"
+	trackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/repository"
+	trackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/service"
+	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
+	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
+	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
+	userMaterialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/handler"
+	userMaterialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
+	userMaterialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/service"
+	userPracticeHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/handler"
+	userPracticeRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
+	userPracticeService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/service"
+	userPracticeRecordRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record/repository"
+	userProjectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/handler"
+	userProjectRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/repository"
+	userProjectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/service"
+	userTrackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/handler"
+	userTrackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
+	userTrackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/service"
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
+)
+
+func SetupApp() *fiber.App {
+	app := fiber.New(fiber.Config{
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			code := fiber.StatusInternalServerError
+			message := err.Error()
+			// message := "Internal server error" // Production
+
+			if e, ok := err.(*fiber.Error); ok {
+				if e.Code != fiber.StatusInternalServerError {
+					code = e.Code
+					message = e.Message
+				}
+			}
+
+			return c.Status(code).JSON(fiber.Map{
+				"message": message,
+			})
+		},
+	})
+
+	godotenv.Load()
+
+	dbConfig := lib.GetDBConfig()
+	dsn := dbConfig.GetDSN()
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: gormLogger.Default.LogMode(gormLogger.Silent),
+	})
+
+	if err != nil {
+		log.Fatal("Failed to connect to database ", err)
+	}
+
+	// app.Use(fiberLogger.New())
+
+	route := app.Group("/api")
+
+	// Create new repos
+	authRepo := authRepository.NewRepository(db)
+	contentRepo := contentRepository.NewRepository(db)
+	trackRepo := trackRepository.NewRepository(db)
+	userMaterialRepo := userMaterialRepository.NewRepository(db)
+	userPracticeRepo := userPracticeRepository.NewRepository(db)
+	userPracticeRecordRepo := userPracticeRecordRepository.NewRepository(db)
+	userProjectRepo := userProjectRepository.NewRepository(db)
+	userRepo := userRepository.NewRepository(db)
+	userTrackRepo := userTrackRepository.NewRepository(db)
+
+	// Create new services
+	authSvc := authService.NewService(authRepo, userRepo)
+	contentSvc := contentService.NewService(contentRepo, userPracticeRepo)
+	practiceSvc := practiceService.NewService(contentRepo)
+	projectSvc := projectService.NewService(contentRepo)
+	trackSvc := trackService.NewService(trackRepo)
+	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
+	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
+	userProjectSvc := userProjectService.NewService(userProjectRepo)
+	userSvc := userService.NewService(userRepo)
+	userTrackSvc := userTrackService.NewService(userTrackRepo)
+
+	// Create new handlers
+	authHandler.NewHandler(route, authSvc)
+	contentHandler.NewHandler(route, contentSvc)
+	practiceHandler.NewHandler(route, practiceSvc)
+	projectHandler.NewHandler(route, projectSvc)
+	userMaterialHandler.NewHandler(route, userMaterialSvc)
+	userPracticeHandler.NewHandler(route, userPracticeSvc)
+	userProjectHandler.NewHandler(route, userProjectSvc)
+	userHandler.NewHandler(route, userSvc)
+	userTrackHandler.NewHandler(route, userTrackSvc)
+	trackHandler.NewHandler(route, trackSvc)
+
+	return app
+}
