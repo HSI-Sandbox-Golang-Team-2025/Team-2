@@ -25,16 +25,6 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Delete("/:id", h.DeleteMaterial)
 }
 
-// CreateMaterial godoc
-// @Summary Create material
-// @Description Create a new material
-// @Tags Material
-// @Accept json
-// @Produce json
-// @Param data body content.Content true "Content Data"
-// @Success 201 {object} content.Content
-// @Failure 400 {object} fiber.Map
-// @Router /materials [post]
 func (h *handler) CreateMaterial(c *fiber.Ctx) error {
 	var req content.Content
 
@@ -54,16 +44,6 @@ func (h *handler) CreateMaterial(c *fiber.Ctx) error {
 	})
 }
 
-// GetMaterialByID godoc
-// @Summary Get material by ID
-// @Description Get a material by its ID
-// @Tags Material
-// @Accept json
-// @Produce json
-// @Param id path int true "Material ID"
-// @Success 200 {object} content.Content
-// @Failure 404 {object} fiber.Map
-// @Router /materials/{id} [get]
 func (h *handler) GetMaterialByID(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -76,15 +56,6 @@ func (h *handler) GetMaterialByID(c *fiber.Ctx) error {
 	return c.JSON(result)
 }
 
-// GetAllMaterial godoc
-// @Summary List materials
-// @Description Get all materials
-// @Tags Material
-// @Accept json
-// @Produce json
-// @Success 200 {array} content.Content
-// @Failure 500 {object} fiber.Map
-// @Router /materials [get]
 func (h *handler) GetAllMaterial(c *fiber.Ctx) error {
 	result, err := h.materialService.GetAllMaterial(c.Context())
 	if err != nil {
@@ -93,17 +64,6 @@ func (h *handler) GetAllMaterial(c *fiber.Ctx) error {
 	return c.JSON(result)
 }
 
-// UpdateMaterial godoc
-// @Summary Update material
-// @Description Update a material by ID
-// @Tags Material
-// @Accept json
-// @Produce json
-// @Param id path int true "Material ID"
-// @Param data body content.Content true "Material Data"
-// @Success 200 {object} content.Content
-// @Failure 400 {object} fiber.Map
-// @Router /materials/{id} [put]
 func (h *handler) UpdateMaterial(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -120,16 +80,6 @@ func (h *handler) UpdateMaterial(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-// DeleteMaterial godoc
-// @Summary Delete material
-// @Description Delete a material by ID
-// @Tags Material
-// @Accept json
-// @Produce json
-// @Param id path int true "Material ID"
-// @Success 204 {object} fiber.Map
-// @Failure 400 {object} fiber.Map
-// @Router /materials/{id} [delete]
 func (h *handler) DeleteMaterial(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {

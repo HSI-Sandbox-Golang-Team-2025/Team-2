@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
 	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
