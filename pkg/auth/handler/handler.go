@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/gofiber/fiber/v2"
@@ -24,85 +23,64 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Post("/register", h.Register)
 }
 
-// Login godoc
+// login godoc
 // @Summary User login
-// @Description Authenticate user and return JWT token
-// @Tags Auth
+// @Description Authenticate user with static credentials and return JWT token
+// @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param credentials body auth.LoginBody true "Login credentials"
-// @Success 200 {object} auth.SuccessLoginResponse "Login success!"
-// @Failure 400 {object} auth.InvalidLoginResponse "Invalid credentials!"
+// @Param credentials body LoginBody true "Login credentials"
+// @Success 200 {object} SuccessLoginResponse "Login success!"
+// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /auth/login [post]
 func (h *handler) Login(c *fiber.Ctx) error {
-	var body auth.LoginBody
+	var body user.User
 
 	if err := c.BodyParser(&body); err != nil {
 		return err
 	}
 
-	u := user.User{
-		Nip:      body.NIP,
-		Password: body.Password,
-	}
-
-	data, err := h.service.Login(context.Background(), u)
+	data, err := h.service.Login(context.Background(), body)
 
 	if err != nil {
 		return err
-	}
-
-	token := ""
-	if data != nil {
-		token = *data
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Login success!",
 		"data": fiber.Map{
-			"token": token,
+			"token": data,
 		},
 	})
 }
 
-// Register godoc
+// register godoc
 // @Summary User register
-// @Description Register a user and return JWT token
-// @Tags Auth
+// @Description Register a user and return a JWT token
+// @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param request body auth.RegisterBody true "New user data"
-// @Success 200 {object} auth.SuccessRegisterResponse "Registration success!"
-// @Failure 400 {object} auth.InvalidRegisterResponse "[Error message]"
+// @Param request body RegisterBody true "New user data"
+// @Success 200 {object} SuccessRegisterResponse "Registration success!"
+// @Failure 400 {object} InvalidRegisterResponse "[Error message]"
 // @Router /auth/register [post]
 func (h *handler) Register(c *fiber.Ctx) error {
-	var body auth.RegisterBody
+	var body user.User
 
 	if err := c.BodyParser(&body); err != nil {
 		return err
 	}
 
-	u := user.User{
-		Nip:      body.NIP,
-		Password: body.Password,
-		Name:     body.Name,
-	}
-
-	data, err := h.service.Register(context.Background(), u)
+	data, err := h.service.Register(context.Background(), body)
 
 	if err != nil {
 		return err
 	}
 
-	token := ""
-	if data != nil {
-		token = *data
-	}
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Registration success!",
 		"data": fiber.Map{
-			"token": token,
+			"token": data,
 		},
 	})
 }

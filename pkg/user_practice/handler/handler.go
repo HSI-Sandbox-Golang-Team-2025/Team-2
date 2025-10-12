@@ -25,14 +25,15 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Patch("/:id/review", h.ReviewUserPractice)
 }
 
-// GetUserPractices godoc
-// @Summary List user practices
-// @Description Get all user practices
-// @Tags UserPractice
+// login godoc
+// @Summary User login
+// @Description Authenticate user with static credentials and return JWT token
+// @Tags Backlog
 // @Accept json
 // @Produce json
-// @Success 200 {array} user_practice.UserPractice
-// @Failure 500 {object} fiber.Map
+// @Param credentials body LoginBody true "Login credentials"
+// @Success 200 {object} SuccessLoginResponse "Get content success!"
+// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-practices [get]
 func (h *handler) GetUserPractices(c *fiber.Ctx) error {
 	data, err := h.service.GetUserPractices(context.Background(), c.Queries())
@@ -47,16 +48,16 @@ func (h *handler) GetUserPractices(c *fiber.Ctx) error {
 	})
 }
 
-// StartUserPractice godoc
-// @Summary Start user practice
-// @Description Start a user practice by ID
-// @Tags UserPractice
+// login godoc
+// @Summary User login
+// @Description Authenticate user with static credentials and return JWT token
+// @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param id path int true "UserPractice ID"
-// @Success 200 {object} user_practice.UserPractice
-// @Failure 400 {object} fiber.Map
-// @Router /user-practices/{id}/start [patch]
+// @Param credentials body LoginBody true "Login credentials"
+// @Success 200 {object} SuccessLoginResponse "Get content success!"
+// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Router /user-practices/:id/start [patch]
 func (h *handler) StartUserPractice(c *fiber.Ctx) error {
 	data, err := h.service.StartUserPractice(context.Background(), c.Params("id"))
 
@@ -70,17 +71,16 @@ func (h *handler) StartUserPractice(c *fiber.Ctx) error {
 	})
 }
 
-// SubmitUserPractice godoc
-// @Summary Submit user practice
-// @Description Submit answers for a user practice
-// @Tags UserPractice
+// login godoc
+// @Summary User login
+// @Description Authenticate user with static credentials and return JWT token
+// @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param id path int true "UserPractice ID"
-// @Param data body user_practice.UserPractice true "UserPractice Data"
-// @Success 200 {object} user_practice.UserPractice
-// @Failure 400 {object} fiber.Map
-// @Router /user-practices/{id}/submit [patch]
+// @Param credentials body LoginBody true "Login credentials"
+// @Success 200 {object} SuccessLoginResponse "Get content success!"
+// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Router /user-practices/:id/submit [patch]
 func (h *handler) SubmitUserPractice(c *fiber.Ctx) error {
 	var body user_practice.UserPractice
 
@@ -100,17 +100,16 @@ func (h *handler) SubmitUserPractice(c *fiber.Ctx) error {
 	})
 }
 
-// ReviewUserPractice godoc
-// @Summary Review user practice
-// @Description Review a user practice by ID
-// @Tags UserPractice
+// login godoc
+// @Summary User login
+// @Description Authenticate user with static credentials and return JWT token
+// @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param id path int true "UserPractice ID"
-// @Param data body user_practice.UserPractice true "Review Data"
-// @Success 200 {object} user_practice.UserPractice
-// @Failure 400 {object} fiber.Map
-// @Router /user-practices/{id}/review [patch]
+// @Param credentials body LoginBody true "Login credentials"
+// @Success 200 {object} SuccessLoginResponse "Get content success!"
+// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Router /user-practices/:id/review [patch]
 func (h *handler) ReviewUserPractice(c *fiber.Ctx) error {
 	var body user_practice.UserPractice
 

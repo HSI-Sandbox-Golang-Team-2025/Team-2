@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Authenticate user and return JWT token",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Authentication"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.LoginBody"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
@@ -43,13 +43,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Login success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessLoginResponse"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidLoginResponse"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -57,7 +57,7 @@ const docTemplate = `{
         },
         "/auth/register": {
             "post": {
-                "description": "Register a user and return JWT token",
+                "description": "Register a user and return a JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -65,7 +65,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Authentication"
                 ],
                 "summary": "User register",
                 "parameters": [
@@ -75,7 +75,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.RegisterBody"
+                            "$ref": "#/definitions/handler.RegisterBody"
                         }
                     }
                 ],
@@ -83,13 +83,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Registration success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessRegisterResponse"
+                            "$ref": "#/definitions/handler.SuccessRegisterResponse"
                         }
                     },
                     "400": {
                         "description": "[Error message]",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidRegisterResponse"
+                            "$ref": "#/definitions/handler.InvalidRegisterResponse"
                         }
                     }
                 }
@@ -97,7 +97,7 @@ const docTemplate = `{
         },
         "/contents": {
             "get": {
-                "description": "Get all learning contents",
+                "description": "Get learning contents (materials, practices and projects)",
                 "consumes": [
                     "application/json"
                 ],
@@ -105,61 +105,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Content"
+                    "Contents"
                 ],
-                "summary": "List contents",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new learning content",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Content"
-                ],
-                "summary": "Create content",
+                "summary": "Get learning contents",
                 "parameters": [
                     {
-                        "description": "Content Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
+                        "type": "string",
+                        "example": "1",
+                        "description": "track.id",
+                        "name": "trackId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "Get contents success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.GetContentsSuccessResponse"
                         }
                     }
                 }
@@ -167,7 +129,7 @@ const docTemplate = `{
         },
         "/contents/{id}": {
             "get": {
-                "description": "Get a learning content by its ID",
+                "description": "Get learning content (materials, practices and projects)",
                 "consumes": [
                     "application/json"
                 ],
@@ -175,13 +137,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Content"
+                    "Contents"
                 ],
-                "summary": "Get content by ID",
+                "summary": "Get learning content",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Content ID",
+                        "example": 1,
+                        "description": "content.id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -189,285 +152,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a learning content by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Content"
-                ],
-                "summary": "Update content",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Content ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Content Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a learning content by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Content"
-                ],
-                "summary": "Delete content",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Content ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/materials": {
-            "get": {
-                "description": "Get all materials",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Material"
-                ],
-                "summary": "List materials",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new material",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Material"
-                ],
-                "summary": "Create material",
-                "parameters": [
-                    {
-                        "description": "Content Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/materials/{id}": {
-            "get": {
-                "description": "Get a material by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Material"
-                ],
-                "summary": "Get material by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Material ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a material by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Material"
-                ],
-                "summary": "Update material",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Material ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Material Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a material by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Material"
-                ],
-                "summary": "Delete material",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Material ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.GetContentSuccessResponse"
                         }
                     }
                 }
@@ -475,7 +162,7 @@ const docTemplate = `{
         },
         "/practices": {
             "post": {
-                "description": "Create a new practice",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -483,31 +170,31 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Practice"
+                    "Backlog"
                 ],
-                "summary": "Create practice",
+                "summary": "User login",
                 "parameters": [
                     {
-                        "description": "Practice Data",
-                        "name": "data",
+                        "description": "Login credentials",
+                        "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -515,7 +202,7 @@ const docTemplate = `{
         },
         "/projects": {
             "post": {
-                "description": "Create a new project",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -523,409 +210,31 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Project"
+                    "Backlog"
                 ],
-                "summary": "Create project",
+                "summary": "User login",
                 "parameters": [
                     {
-                        "description": "Project Data",
-                        "name": "data",
+                        "description": "Login credentials",
+                        "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/tracks": {
-            "get": {
-                "description": "Get all tracks",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Track"
-                ],
-                "summary": "List tracks",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new track",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Track"
-                ],
-                "summary": "Create track",
-                "parameters": [
-                    {
-                        "description": "Track Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/tracks/{id}": {
-            "get": {
-                "description": "Get a track by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Track"
-                ],
-                "summary": "Get track by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Track ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a track by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Track"
-                ],
-                "summary": "Update track",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Track ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Track Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a track by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Track"
-                ],
-                "summary": "Delete track",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Track ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-materials": {
-            "get": {
-                "description": "Get all user materials",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserMaterial"
-                ],
-                "summary": "List user materials",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Register a material for a user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserMaterial"
-                ],
-                "summary": "Create user material",
-                "parameters": [
-                    {
-                        "description": "UserMaterial Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-materials/{id}": {
-            "get": {
-                "description": "Get a user material by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserMaterial"
-                ],
-                "summary": "Get user material by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserMaterial ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a user material by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserMaterial"
-                ],
-                "summary": "Update user material",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserMaterial ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "UserMaterial Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a user material by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserMaterial"
-                ],
-                "summary": "Delete user material",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserMaterial ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -933,7 +242,7 @@ const docTemplate = `{
         },
         "/user-practices": {
             "get": {
-                "description": "Get all user practices",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -941,78 +250,39 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "UserPractice"
+                    "Backlog"
                 ],
-                "summary": "List user practices",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-practices/{id}/review": {
-            "patch": {
-                "description": "Review a user practice by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserPractice"
-                ],
-                "summary": "Review user practice",
+                "summary": "User login",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "UserPractice ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Review Data",
-                        "name": "data",
+                        "description": "Login credentials",
+                        "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
             }
         },
-        "/user-practices/{id}/start": {
+        "/user-practices/:id/review": {
             "patch": {
-                "description": "Start a user practice by ID",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -1020,76 +290,111 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "UserPractice"
+                    "Backlog"
                 ],
-                "summary": "Start user practice",
+                "summary": "User login",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "UserPractice ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-practices/{id}/submit": {
-            "patch": {
-                "description": "Submit answers for a user practice",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserPractice"
-                ],
-                "summary": "Submit user practice",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserPractice ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "UserPractice Data",
-                        "name": "data",
+                        "description": "Login credentials",
+                        "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-practices/:id/start": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Backlog"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-practices/:id/submit": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Backlog"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -1097,7 +402,7 @@ const docTemplate = `{
         },
         "/user-projects": {
             "get": {
-                "description": "Get all user projects",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -1105,29 +410,37 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "UserProject"
+                    "Backlog"
                 ],
-                "summary": "List user projects",
+                "summary": "Get user projects",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
-                            }
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
             },
             "post": {
-                "description": "Start a user project",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -1135,86 +448,39 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "UserProject"
+                    "Backlog"
                 ],
                 "summary": "Start user project",
                 "parameters": [
                     {
-                        "description": "UserProject Data",
-                        "name": "data",
+                        "description": "Login credentials",
+                        "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-projects/{id}/review": {
-            "patch": {
-                "description": "Review a user project by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserProject"
-                ],
-                "summary": "Review user project",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserProject ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Review Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
             }
         },
-        "/user-projects/{id}/submit": {
+        "/user-projects/:id/review": {
             "patch": {
-                "description": "Submit a user project by ID",
+                "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -1222,227 +488,71 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "UserProject"
+                    "Backlog"
+                ],
+                "summary": "Review user projects",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get content success!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials!",
+                        "schema": {
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-projects/:id/submit": {
+            "patch": {
+                "description": "Authenticate user with static credentials and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Backlog"
                 ],
                 "summary": "Submit user project",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "UserProject ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "UserProject Data",
-                        "name": "data",
+                        "description": "Login credentials",
+                        "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
+                            "$ref": "#/definitions/handler.LoginBody"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject"
+                            "$ref": "#/definitions/handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-tracks": {
-            "get": {
-                "description": "Get all user tracks",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserTrack"
-                ],
-                "summary": "List user tracks",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Register a track for a user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserTrack"
-                ],
-                "summary": "Create user track",
-                "parameters": [
-                    {
-                        "description": "UserTrack Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-tracks/{id}": {
-            "get": {
-                "description": "Get a user track by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserTrack"
-                ],
-                "summary": "Get user track by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserTrack ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update a user track by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserTrack"
-                ],
-                "summary": "Update user track",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserTrack ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "UserTrack Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a user track by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserTrack"
-                ],
-                "summary": "Delete user track",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserTrack ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Map"
+                            "$ref": "#/definitions/handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -1450,100 +560,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "fiber.Map": {
-            "type": "object",
-            "additionalProperties": true
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidLoginResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "email or password is incorrect"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Invalid credentials!"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidRegisterResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "email or password is incorrect"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Invalid credentials!"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.LoginBody": {
-            "type": "object",
-            "properties": {
-                "nip": {
-                    "type": "string",
-                    "example": "ARN-2402001"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "123"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.RegisterBody": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Luthfi"
-                },
-                "nip": {
-                    "type": "string",
-                    "example": "ARN-2402009"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "123"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessLoginResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.TokenData"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Login success!"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessRegisterResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.TokenData"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Login success!"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.TokenData": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string",
-                    "example": "eyJhbGciOiJI..."
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content": {
+        "content.Content": {
             "type": "object",
             "properties": {
                 "body": {
@@ -1575,7 +592,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "type": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType"
+                    "$ref": "#/definitions/content.ContentType"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -1583,12 +600,12 @@ const docTemplate = `{
                 "userPractices": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                        "$ref": "#/definitions/user_practice.UserPractice"
                     }
                 }
             }
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType": {
+        "content.ContentType": {
             "type": "string",
             "enum": [
                 "material",
@@ -1601,105 +618,124 @@ const docTemplate = `{
                 "ContentTypeProject"
             ]
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_role.Role": {
+        "handler.GetContentSuccessResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
+                "data": {
+                    "$ref": "#/definitions/content.Content"
                 },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
+                "message": {
+                    "type": "string",
+                    "example": "Get content success!"
                 }
             }
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track": {
+        "handler.GetContentsSuccessResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/content.Content"
+                    }
                 },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
+                "message": {
+                    "type": "string",
+                    "example": "Get content success!"
                 }
             }
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user.User": {
+        "handler.InvalidLoginResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid Credentials!"
+                }
+            }
+        },
+        "handler.InvalidRegisterResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Registration failed!"
+                }
+            }
+        },
+        "handler.LoginBody": {
+            "type": "object",
+            "properties": {
                 "nip": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "ARN-2402001"
                 },
                 "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_role.Role"
-                },
-                "roleId": {
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123"
                 }
             }
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial": {
+        "handler.RegisterBody": {
             "type": "object",
             "properties": {
-                "content_id": {
-                    "type": "integer"
+                "name": {
+                    "type": "string",
+                    "example": "Teguh"
                 },
-                "createdAt": {
-                    "type": "string"
+                "nip": {
+                    "type": "string",
+                    "example": "ARN-2402001"
                 },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
+                "password": {
+                    "type": "string",
+                    "example": "123"
                 }
             }
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice": {
+        "handler.SuccessLoginData": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUz.."
+                }
+            }
+        },
+        "handler.SuccessLoginResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/handler.SuccessLoginData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Login success!"
+                }
+            }
+        },
+        "handler.SuccessRegisterData": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUz.."
+                }
+            }
+        },
+        "handler.SuccessRegisterResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/handler.SuccessRegisterData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Registration success!"
+                }
+            }
+        },
+        "user_practice.UserPractice": {
             "type": "object",
             "properties": {
                 "comment": {
@@ -1721,7 +757,7 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "status": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus"
+                    "$ref": "#/definitions/user_practice.UserPracticeStatus"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -1735,12 +771,12 @@ const docTemplate = `{
                 "userPracticeRecords": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice_record.UserPracticeRecord"
+                        "$ref": "#/definitions/user_practice_record.UserPracticeRecord"
                     }
                 }
             }
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus": {
+        "user_practice.UserPracticeStatus": {
             "type": "string",
             "enum": [
                 "opened",
@@ -1755,7 +791,7 @@ const docTemplate = `{
                 "Reviewed"
             ]
         },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice_record.UserPracticeRecord": {
+        "user_practice_record.UserPracticeRecord": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -1790,135 +826,6 @@ const docTemplate = `{
                 },
                 "userPracticeId": {
                     "type": "integer"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject": {
-            "type": "object",
-            "properties": {
-                "comment": {
-                    "type": "string"
-                },
-                "content": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
-                },
-                "contentId": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "medias": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project_media.UserProjectMedia"
-                    }
-                },
-                "score": {
-                    "type": "number"
-                },
-                "status": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProjectStatus"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user.User"
-                },
-                "userId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProjectStatus": {
-            "type": "string",
-            "enum": [
-                "in progress",
-                "submitted",
-                "rejected",
-                "approved"
-            ],
-            "x-enum-varnames": [
-                "InProgress",
-                "Submitted",
-                "Rejected",
-                "Approved"
-            ]
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project_media.UserProjectMedia": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "userProjectId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "track": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track"
-                },
-                "trackId": {
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user.User"
-                },
-                "userId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
                 }
             }
         }

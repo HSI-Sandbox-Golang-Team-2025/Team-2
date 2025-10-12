@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
 	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
 	authService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/service"

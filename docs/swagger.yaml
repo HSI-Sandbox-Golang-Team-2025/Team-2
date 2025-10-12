@@ -1,70 +1,6 @@
 basePath: /api
 definitions:
-  fiber.Map:
-    additionalProperties: true
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidLoginResponse:
-    properties:
-      error:
-        example: email or password is incorrect
-        type: string
-      message:
-        example: Invalid credentials!
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidRegisterResponse:
-    properties:
-      error:
-        example: email or password is incorrect
-        type: string
-      message:
-        example: Invalid credentials!
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.LoginBody:
-    properties:
-      nip:
-        example: ARN-2402001
-        type: string
-      password:
-        example: "123"
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.RegisterBody:
-    properties:
-      name:
-        example: Luthfi
-        type: string
-      nip:
-        example: ARN-2402009
-        type: string
-      password:
-        example: "123"
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessLoginResponse:
-    properties:
-      data:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.TokenData'
-      message:
-        example: Login success!
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessRegisterResponse:
-    properties:
-      data:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.TokenData'
-      message:
-        example: Login success!
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.TokenData:
-    properties:
-      token:
-        example: eyJhbGciOiJI...
-        type: string
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content:
+  content.Content:
     properties:
       body:
         type: string
@@ -86,15 +22,15 @@ definitions:
       trackId:
         type: integer
       type:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType'
+        $ref: '#/definitions/content.ContentType'
       updatedAt:
         type: string
       userPractices:
         items:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
+          $ref: '#/definitions/user_practice.UserPractice'
         type: array
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType:
+  content.ContentType:
     enum:
     - material
     - practice
@@ -104,71 +40,86 @@ definitions:
     - ContentTypeMaterial
     - ContentTypePractice
     - ContentTypeProject
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_role.Role:
+  handler.GetContentSuccessResponse:
     properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updatedAt:
+      data:
+        $ref: '#/definitions/content.Content'
+      message:
+        example: Get content success!
         type: string
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track:
+  handler.GetContentsSuccessResponse:
     properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updatedAt:
+      data:
+        items:
+          $ref: '#/definitions/content.Content'
+        type: array
+      message:
+        example: Get content success!
         type: string
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user.User:
+  handler.InvalidLoginResponse:
     properties:
-      createdAt:
+      message:
+        example: Invalid Credentials!
         type: string
-      deletedAt:
+    type: object
+  handler.InvalidRegisterResponse:
+    properties:
+      message:
+        example: Registration failed!
         type: string
-      id:
-        type: integer
-      name:
-        type: string
+    type: object
+  handler.LoginBody:
+    properties:
       nip:
+        example: ARN-2402001
         type: string
       password:
-        type: string
-      role:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_role.Role'
-      roleId:
-        type: integer
-      updatedAt:
+        example: "123"
         type: string
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial:
+  handler.RegisterBody:
     properties:
-      content_id:
-        type: integer
-      createdAt:
+      name:
+        example: Teguh
         type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
-      status:
+      nip:
+        example: ARN-2402001
         type: string
-      updatedAt:
+      password:
+        example: "123"
         type: string
-      user_id:
-        type: integer
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice:
+  handler.SuccessLoginData:
+    properties:
+      token:
+        example: eyJhbGciOiJIUz..
+        type: string
+    type: object
+  handler.SuccessLoginResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handler.SuccessLoginData'
+      message:
+        example: Login success!
+        type: string
+    type: object
+  handler.SuccessRegisterData:
+    properties:
+      token:
+        example: eyJhbGciOiJIUz..
+        type: string
+    type: object
+  handler.SuccessRegisterResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handler.SuccessRegisterData'
+      message:
+        example: Registration success!
+        type: string
+    type: object
+  user_practice.UserPractice:
     properties:
       comment:
         type: string
@@ -183,7 +134,7 @@ definitions:
       score:
         type: number
       status:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus'
+        $ref: '#/definitions/user_practice.UserPracticeStatus'
       updatedAt:
         type: string
       user:
@@ -192,10 +143,10 @@ definitions:
         type: integer
       userPracticeRecords:
         items:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice_record.UserPracticeRecord'
+          $ref: '#/definitions/user_practice_record.UserPracticeRecord'
         type: array
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus:
+  user_practice.UserPracticeStatus:
     enum:
     - opened
     - in progress
@@ -207,7 +158,7 @@ definitions:
     - InProgress
     - Submitted
     - Reviewed
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice_record.UserPracticeRecord:
+  user_practice_record.UserPracticeRecord:
     properties:
       createdAt:
         type: string
@@ -232,93 +183,6 @@ definitions:
       userPracticeId:
         type: integer
     type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject:
-    properties:
-      comment:
-        type: string
-      content:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-      contentId:
-        type: integer
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      id:
-        type: integer
-      medias:
-        items:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project_media.UserProjectMedia'
-        type: array
-      score:
-        type: number
-      status:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProjectStatus'
-      updatedAt:
-        type: string
-      url:
-        type: string
-      user:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user.User'
-      userId:
-        type: integer
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProjectStatus:
-    enum:
-    - in progress
-    - submitted
-    - rejected
-    - approved
-    type: string
-    x-enum-varnames:
-    - InProgress
-    - Submitted
-    - Rejected
-    - Approved
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project_media.UserProjectMedia:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updatedAt:
-        type: string
-      url:
-        type: string
-      userProjectId:
-        type: integer
-    type: object
-  github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      id:
-        type: integer
-      track:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
-      trackId:
-        type: integer
-      updatedAt:
-        type: string
-      user:
-        $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user.User'
-      userId:
-        type: integer
-    type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
 host: localhost:3000
 info:
   contact: {}
@@ -330,131 +194,83 @@ paths:
     post:
       consumes:
       - application/json
-      description: Authenticate user and return JWT token
+      description: Authenticate user with static credentials and return JWT token
       parameters:
       - description: Login credentials
         in: body
         name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.LoginBody'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
           description: Login success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessLoginResponse'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
           description: Invalid credentials!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidLoginResponse'
+            $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: User login
       tags:
-      - Auth
+      - Authentication
   /auth/register:
     post:
       consumes:
       - application/json
-      description: Register a user and return JWT token
+      description: Register a user and return a JWT token
       parameters:
       - description: New user data
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.RegisterBody'
+          $ref: '#/definitions/handler.RegisterBody'
       produces:
       - application/json
       responses:
         "200":
           description: Registration success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.SuccessRegisterResponse'
+            $ref: '#/definitions/handler.SuccessRegisterResponse'
         "400":
           description: '[Error message]'
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_auth.InvalidRegisterResponse'
+            $ref: '#/definitions/handler.InvalidRegisterResponse'
       summary: User register
       tags:
-      - Auth
+      - Authentication
   /contents:
     get:
       consumes:
       - application/json
-      description: Get all learning contents
+      description: Get learning contents (materials, practices and projects)
+      parameters:
+      - description: track.id
+        example: "1"
+        in: query
+        name: trackId
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get contents success!
           schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List contents
+            $ref: '#/definitions/handler.GetContentsSuccessResponse'
+      summary: Get learning contents
       tags:
-      - Content
-    post:
-      consumes:
-      - application/json
-      description: Create a new learning content
-      parameters:
-      - description: Content Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create content
-      tags:
-      - Content
+      - Contents
   /contents/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a learning content by ID
-      parameters:
-      - description: Content ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/fiber.Map'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Delete content
-      tags:
-      - Content
     get:
       consumes:
       - application/json
-      description: Get a learning content by its ID
+      description: Get learning content (materials, practices and projects)
       parameters:
-      - description: Content ID
+      - description: content.id
+        example: 1
         in: path
         name: id
         required: true
@@ -463,814 +279,271 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Get content by ID
+            $ref: '#/definitions/handler.GetContentSuccessResponse'
+      summary: Get learning content
       tags:
-      - Content
-    put:
-      consumes:
-      - application/json
-      description: Update a learning content by ID
-      parameters:
-      - description: Content ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Content Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Update content
-      tags:
-      - Content
-  /materials:
-    get:
-      consumes:
-      - application/json
-      description: Get all materials
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List materials
-      tags:
-      - Material
-    post:
-      consumes:
-      - application/json
-      description: Create a new material
-      parameters:
-      - description: Content Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create material
-      tags:
-      - Material
-  /materials/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a material by ID
-      parameters:
-      - description: Material ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/fiber.Map'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Delete material
-      tags:
-      - Material
-    get:
-      consumes:
-      - application/json
-      description: Get a material by its ID
-      parameters:
-      - description: Material ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Get material by ID
-      tags:
-      - Material
-    put:
-      consumes:
-      - application/json
-      description: Update a material by ID
-      parameters:
-      - description: Material ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Material Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Update material
-      tags:
-      - Material
+      - Contents
   /practices:
     post:
       consumes:
       - application/json
-      description: Create a new practice
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: Practice Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create practice
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
       tags:
-      - Practice
+      - Backlog
   /projects:
     post:
       consumes:
       - application/json
-      description: Create a new project
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: Project Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create project
-      tags:
-      - Project
-  /tracks:
-    get:
-      consumes:
-      - application/json
-      description: Get all tracks
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List tracks
-      tags:
-      - Track
-    post:
-      consumes:
-      - application/json
-      description: Create a new track
-      parameters:
-      - description: Track Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create track
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
       tags:
-      - Track
-  /tracks/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a track by ID
-      parameters:
-      - description: Track ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/fiber.Map'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Delete track
-      tags:
-      - Track
-    get:
-      consumes:
-      - application/json
-      description: Get a track by its ID
-      parameters:
-      - description: Track ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Get track by ID
-      tags:
-      - Track
-    put:
-      consumes:
-      - application/json
-      description: Update a track by ID
-      parameters:
-      - description: Track ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Track Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_track.Track'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Update track
-      tags:
-      - Track
-  /user-materials:
-    get:
-      consumes:
-      - application/json
-      description: Get all user materials
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List user materials
-      tags:
-      - UserMaterial
-    post:
-      consumes:
-      - application/json
-      description: Register a material for a user
-      parameters:
-      - description: UserMaterial Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create user material
-      tags:
-      - UserMaterial
-  /user-materials/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user material by ID
-      parameters:
-      - description: UserMaterial ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/fiber.Map'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Delete user material
-      tags:
-      - UserMaterial
-    get:
-      consumes:
-      - application/json
-      description: Get a user material by its ID
-      parameters:
-      - description: UserMaterial ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Get user material by ID
-      tags:
-      - UserMaterial
-    put:
-      consumes:
-      - application/json
-      description: Update a user material by ID
-      parameters:
-      - description: UserMaterial ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: UserMaterial Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_material.UserMaterial'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Update user material
-      tags:
-      - UserMaterial
+      - Backlog
   /user-practices:
     get:
       consumes:
       - application/json
-      description: Get all user practices
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List user practices
-      tags:
-      - UserPractice
-  /user-practices/{id}/review:
-    patch:
-      consumes:
-      - application/json
-      description: Review a user practice by ID
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: UserPractice ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Review Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Review user practice
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
       tags:
-      - UserPractice
-  /user-practices/{id}/start:
+      - Backlog
+  /user-practices/:id/review:
     patch:
       consumes:
       - application/json
-      description: Start a user practice by ID
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: UserPractice ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Start user practice
-      tags:
-      - UserPractice
-  /user-practices/{id}/submit:
-    patch:
-      consumes:
-      - application/json
-      description: Submit answers for a user practice
-      parameters:
-      - description: UserPractice ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: UserPractice Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Submit user practice
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
       tags:
-      - UserPractice
+      - Backlog
+  /user-practices/:id/start:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
+  /user-practices/:id/submit:
+    patch:
+      consumes:
+      - application/json
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get content success!
+          schema:
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
+          schema:
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: User login
+      tags:
+      - Backlog
   /user-projects:
     get:
       consumes:
       - application/json
-      description: Get all user projects
+      description: Authenticate user with static credentials and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
-            type: array
-        "500":
-          description: Internal Server Error
+            $ref: '#/definitions/handler.SuccessLoginResponse'
+        "400":
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List user projects
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: Get user projects
       tags:
-      - UserProject
+      - Backlog
     post:
       consumes:
       - application/json
-      description: Start a user project
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: UserProject Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
+            $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: Start user project
       tags:
-      - UserProject
-  /user-projects/{id}/review:
+      - Backlog
+  /user-projects/:id/review:
     patch:
       consumes:
       - application/json
-      description: Review a user project by ID
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: UserProject ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Review Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Review user project
+            $ref: '#/definitions/handler.InvalidLoginResponse'
+      summary: Review user projects
       tags:
-      - UserProject
-  /user-projects/{id}/submit:
+      - Backlog
+  /user-projects/:id/submit:
     patch:
       consumes:
       - application/json
-      description: Submit a user project by ID
+      description: Authenticate user with static credentials and return JWT token
       parameters:
-      - description: UserProject ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: UserProject Data
+      - description: Login credentials
         in: body
-        name: data
+        name: credentials
         required: true
         schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
+          $ref: '#/definitions/handler.LoginBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Get content success!
           schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_project.UserProject'
+            $ref: '#/definitions/handler.SuccessLoginResponse'
         "400":
-          description: Bad Request
+          description: Invalid credentials!
           schema:
-            $ref: '#/definitions/fiber.Map'
+            $ref: '#/definitions/handler.InvalidLoginResponse'
       summary: Submit user project
       tags:
-      - UserProject
-  /user-tracks:
-    get:
-      consumes:
-      - application/json
-      description: Get all user tracks
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: List user tracks
-      tags:
-      - UserTrack
-    post:
-      consumes:
-      - application/json
-      description: Register a track for a user
-      parameters:
-      - description: UserTrack Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Create user track
-      tags:
-      - UserTrack
-  /user-tracks/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user track by ID
-      parameters:
-      - description: UserTrack ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/fiber.Map'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Delete user track
-      tags:
-      - UserTrack
-    get:
-      consumes:
-      - application/json
-      description: Get a user track by its ID
-      parameters:
-      - description: UserTrack ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Get user track by ID
-      tags:
-      - UserTrack
-    put:
-      consumes:
-      - application/json
-      description: Update a user track by ID
-      parameters:
-      - description: UserTrack ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: UserTrack Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_track.UserTrack'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/fiber.Map'
-      summary: Update user track
-      tags:
-      - UserTrack
+      - Backlog
 schemes:
 - http
 securityDefinitions:
