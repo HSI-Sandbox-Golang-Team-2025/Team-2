@@ -1,13 +1,14 @@
 package tests
 
 import (
+	"fmt"
 	"log"
 
 	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
 	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
 	authService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	contentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/handler"
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
@@ -15,28 +16,38 @@ import (
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
 	projectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question_answer_choice"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
 	trackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/handler"
 	trackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/repository"
 	trackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
 	userMaterialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/handler"
 	userMaterialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
 	userMaterialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 	userPracticeHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/handler"
 	userPracticeRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
 	userPracticeService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record"
 	userPracticeRecordRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project"
 	userProjectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/handler"
 	userProjectRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/repository"
 	userProjectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project_media"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
 	userTrackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/handler"
 	userTrackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 	userTrackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/service"
+	"github.com/glebarez/sqlite"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
 )
@@ -63,15 +74,52 @@ func SetupApp() *fiber.App {
 
 	godotenv.Load()
 
-	dbConfig := lib.GetDBConfig()
-	dsn := dbConfig.GetDSN()
+	dsn := ":memory:"
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		Logger: gormLogger.Default.LogMode(gormLogger.Silent),
+		// Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
 
 	if err != nil {
 		log.Fatal("Failed to connect to database ", err)
+	}
+
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE content_types AS ENUM ('%s', '%s', '%s');",
+			content.ContentTypeMaterial,
+			content.ContentTypePractice,
+			content.ContentTypeProject,
+		),
+	)
+
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s', '%s');",
+			user_practice.Opened,
+			user_practice.InProgress,
+			user_practice.Submitted,
+			user_practice.Reviewed,
+		),
+	)
+
+	err = db.AutoMigrate(
+		&content.Content{},
+		&question.Question{},
+		&question_answer_choice.QuestionAnswerChoice{},
+		&role.Role{},
+		&track.Track{},
+		&user.User{},
+		&user_practice.UserPractice{},
+		&user_practice_record.UserPracticeRecord{},
+		&user_project.UserProject{},
+		&user_project_media.UserProjectMedia{},
+		&user_track.UserTrack{},
+	)
+
+	if err != nil {
+		log.Fatal("Auto migration failed ", err)
 	}
 
 	// app.Use(fiberLogger.New())
