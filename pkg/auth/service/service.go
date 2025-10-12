@@ -61,9 +61,10 @@ func (s *service) Register(ctx context.Context, body user.User) (*string, error)
 	u := user.User{}
 
 	u.Nip = body.Nip
+	u.Name = body.Name
 	u.RoleID = 3 // Santri
 
-	hashedPassword, err := lib.HashPassword(u.Password)
+	hashedPassword, err := lib.HashPassword(body.Password)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
