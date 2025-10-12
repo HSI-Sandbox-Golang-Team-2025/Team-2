@@ -25,15 +25,15 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Patch("/:id/review", h.ReviewUserProjects)
 }
 
-// startUserProject godoc
+// StartUserProject godoc
 // @Summary Start user project
-// @Description Authenticate user with static credentials and return JWT token
-// @Tags Backlog
+// @Description Start a user project
+// @Tags UserProject
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Param data body user_project.UserProject true "UserProject Data"
+// @Success 201 {object} user_project.UserProject
+// @Failure 400 {object} fiber.Map
 // @Router /user-projects [post]
 func (h *handler) StartUserProject(c *fiber.Ctx) error {
 	var body user_project.UserProject
@@ -54,15 +54,14 @@ func (h *handler) StartUserProject(c *fiber.Ctx) error {
 	})
 }
 
-// getUserProjects godoc
-// @Summary Get user projects
-// @Description Authenticate user with static credentials and return JWT token
-// @Tags Backlog
+// GetUserProjects godoc
+// @Summary List user projects
+// @Description Get all user projects
+// @Tags UserProject
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Success 200 {array} user_project.UserProject
+// @Failure 500 {object} fiber.Map
 // @Router /user-projects [get]
 func (h *handler) GetUserProjects(c *fiber.Ctx) error {
 	data, err := h.service.GetUserProjects(context.Background(), c.Queries())
@@ -77,16 +76,17 @@ func (h *handler) GetUserProjects(c *fiber.Ctx) error {
 	})
 }
 
-// submitUserProject godoc
+// SubmitUserProject godoc
 // @Summary Submit user project
-// @Description Authenticate user with static credentials and return JWT token
-// @Tags Backlog
+// @Description Submit a user project by ID
+// @Tags UserProject
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
-// @Router /user-projects/:id/submit [patch]
+// @Param id path int true "UserProject ID"
+// @Param data body user_project.UserProject true "UserProject Data"
+// @Success 200 {object} user_project.UserProject
+// @Failure 400 {object} fiber.Map
+// @Router /user-projects/{id}/submit [patch]
 func (h *handler) SubmitUserProject(c *fiber.Ctx) error {
 	var body user_project.UserProject
 
@@ -106,16 +106,17 @@ func (h *handler) SubmitUserProject(c *fiber.Ctx) error {
 	})
 }
 
-// reviewUserProjects godoc
-// @Summary Review user projects
-// @Description Authenticate user with static credentials and return JWT token
-// @Tags Backlog
+// ReviewUserProjects godoc
+// @Summary Review user project
+// @Description Review a user project by ID
+// @Tags UserProject
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
-// @Router /user-projects/:id/review [patch]
+// @Param id path int true "UserProject ID"
+// @Param data body user_project.UserProject true "Review Data"
+// @Success 200 {object} user_project.UserProject
+// @Failure 400 {object} fiber.Map
+// @Router /user-projects/{id}/review [patch]
 func (h *handler) ReviewUserProjects(c *fiber.Ctx) error {
 	var body user_project.UserProject
 
