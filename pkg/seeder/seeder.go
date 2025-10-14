@@ -95,275 +95,281 @@ func (s *seeder) runEndpointSeeder() error {
 		{
 			Path:   "/api/auth/register",
 			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: nil},
+			},
 		},
 		{
 			Path:   "/api/auth/login",
 			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: nil},
+			},
 		},
 		{
 			Path:   "/api/contents",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/contents",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/contents/:id",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/contents/:id",
 			Method: "PUT",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/contents/:id",
 			Method: "DELETE",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/materials",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/materials",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/materials/:id",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/materials/:id",
 			Method: "PUT",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/materials/:id",
 			Method: "DELETE",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/practices",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/projects",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/tracks",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/tracks",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/tracks/:id",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/tracks/:id",
 			Method: "PUT",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/tracks/:id",
 			Method: "DELETE",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/user-materials",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/user-materials",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-materials/:id",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-materials/:id",
 			Method: "PUT",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/user-materials/:id",
 			Method: "DELETE",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
+				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
 			Path:   "/api/user-practices",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-practices/:id/start",
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-practices/:id/submit",
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-practices/:id/review",
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-projects",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-projects",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-projects/:id/submit",
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-projects/:id/review",
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-tracks",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-tracks",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-tracks/:id",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-tracks/:id",
 			Method: "PUT",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
 			Path:   "/api/user-tracks/:id",
 			Method: "DELETE",
 			ACLs: &[]acl.ACL{
-				{RoleID: 1},
-				{RoleID: 2},
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
 			},
 		},
 	}
