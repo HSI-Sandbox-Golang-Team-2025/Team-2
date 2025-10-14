@@ -37,7 +37,7 @@ func (r *repository) CreateRole(ctx context.Context, rol *role.Role) error {
 	findRoleCondition := FindRoleCondition{Role: *rol}
 
 	if err := r.GetRole(ctx, rol, &findRoleCondition); err == nil {
-		return errors.New("NIP is already registered")
+		return errors.New("Role is already registered")
 	}
 
 	if err := r.db.WithContext(ctx).Create(&rol).Error; err != nil {
