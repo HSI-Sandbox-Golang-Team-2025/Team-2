@@ -6,6 +6,8 @@ import (
 
 	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/middleware"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/acl"
 	authHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/handler"
 	authRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
 	authService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/service"
@@ -13,6 +15,7 @@ import (
 	contentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/handler"
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
@@ -118,17 +121,19 @@ func main() {
 	)
 
 	err = db.AutoMigrate(
+		&endpoint.Endpoint{},
+		&role.Role{},
+		&acl.ACL{},
+		&user.User{},
+		&track.Track{},
+		&user_track.UserTrack{},
 		&content.Content{},
 		&question.Question{},
 		&question_answer_choice.QuestionAnswerChoice{},
-		&role.Role{},
-		&track.Track{},
-		&user.User{},
 		&user_practice.UserPractice{},
 		&user_practice_record.UserPracticeRecord{},
 		&user_project.UserProject{},
 		&user_project_media.UserProjectMedia{},
-		&user_track.UserTrack{},
 	)
 
 	if err != nil {
@@ -137,7 +142,9 @@ func main() {
 
 	app.Use(fiberLogger.New())
 
-	route := app.Group("/api")
+	middleware := middleware.NewMiddleware(db)
+
+	route := app.Group("/api", middleware.JWT)
 
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
