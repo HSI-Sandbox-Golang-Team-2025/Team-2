@@ -4,7 +4,10 @@ import (
 	"context"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/acl"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/basic_model"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint"
+	endpointRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	roleRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
@@ -12,21 +15,25 @@ import (
 )
 
 type seeder struct {
-	userRepo userRepository.Repository
-	roleRepo roleRepository.Repository
+	userRepo     userRepository.Repository
+	roleRepo     roleRepository.Repository
+	endpointRepo endpointRepository.Repository
 }
 
 func RunSeeders(
 	userRepo userRepository.Repository,
 	roleRepo roleRepository.Repository,
+	endpointRepo endpointRepository.Repository,
 ) {
 	s := &seeder{
-		userRepo: userRepo,
-		roleRepo: roleRepo,
+		userRepo:     userRepo,
+		roleRepo:     roleRepo,
+		endpointRepo: endpointRepo,
 	}
 
 	s.runRoleSeeder()
 	s.runUserSeeder()
+	s.runEndpointSeeder()
 }
 
 func (s *seeder) runRoleSeeder() error {
@@ -72,6 +79,291 @@ func (s *seeder) runUserSeeder() error {
 		u.Password = hassPassword
 
 		s.userRepo.CreateUser(context.Background(), &u)
+	}
+
+	return nil
+}
+
+func (s *seeder) runEndpointSeeder() error {
+	endpoints := []endpoint.Endpoint{
+		{
+			Path:   "/api/auth/register",
+			Method: "POST",
+		},
+		{
+			Path:   "/api/auth/login",
+			Method: "POST",
+		},
+		{
+			Path:   "/api/contents",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/contents",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/contents/:id",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/contents/:id",
+			Method: "PUT",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/contents/:id",
+			Method: "DELETE",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/materials",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/materials",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/materials/:id",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/materials/:id",
+			Method: "PUT",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/materials/:id",
+			Method: "DELETE",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/practices",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/projects",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/tracks",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/tracks",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/tracks/:id",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/tracks/:id",
+			Method: "PUT",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/tracks/:id",
+			Method: "DELETE",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/user-materials",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/user-materials",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-materials/:id",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-materials/:id",
+			Method: "PUT",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/user-materials/:id",
+			Method: "DELETE",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+			},
+		},
+		{
+			Path:   "/api/user-practices",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-practices/:id/start",
+			Method: "PATCH",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-practices/:id/submit",
+			Method: "PATCH",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-practices/:id/review",
+			Method: "PATCH",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-projects",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-projects",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-projects/:id/submit",
+			Method: "PATCH",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-projects/:id/review",
+			Method: "PATCH",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-tracks",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-tracks",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-tracks/:id",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-tracks/:id",
+			Method: "PUT",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+		{
+			Path:   "/api/user-tracks/:id",
+			Method: "DELETE",
+			ACLs: &[]acl.ACL{
+				{RoleID: 1},
+				{RoleID: 2},
+			},
+		},
+	}
+
+	for _, e := range endpoints {
+		s.endpointRepo.CreateEndpoint(context.Background(), &e)
 	}
 
 	return nil

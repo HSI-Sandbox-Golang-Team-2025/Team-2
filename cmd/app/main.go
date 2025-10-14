@@ -16,6 +16,7 @@ import (
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint"
+	endpointRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint/repository"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
@@ -151,6 +152,7 @@ func main() {
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
+	endpointRepo := endpointRepository.NewRepository(db)
 	roleRepo := roleRepository.NewRepository(db)
 	trackRepo := trackRepository.NewRepository(db)
 	userMaterialRepo := userMaterialRepository.NewRepository(db)
@@ -184,7 +186,11 @@ func main() {
 	userTrackHandler.NewHandler(route, userTrackSvc)
 	trackHandler.NewHandler(route, trackSvc)
 
-	seeder.RunSeeders(userRepo, roleRepo)
+	seeder.RunSeeders(
+		userRepo,
+		roleRepo,
+		endpointRepo,
+	)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
