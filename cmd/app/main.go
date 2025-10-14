@@ -16,6 +16,7 @@ import (
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint"
+	endpointRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint/repository"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
@@ -23,6 +24,8 @@ import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question_answer_choice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
+	roleRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/seeder"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
 	trackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/handler"
 	trackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/repository"
@@ -149,6 +152,8 @@ func main() {
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
+	endpointRepo := endpointRepository.NewRepository(db)
+	roleRepo := roleRepository.NewRepository(db)
 	trackRepo := trackRepository.NewRepository(db)
 	userMaterialRepo := userMaterialRepository.NewRepository(db)
 	userPracticeRepo := userPracticeRepository.NewRepository(db)
@@ -180,6 +185,13 @@ func main() {
 	userHandler.NewHandler(route, userSvc)
 	userTrackHandler.NewHandler(route, userTrackSvc)
 	trackHandler.NewHandler(route, trackSvc)
+
+	seeder.RunSeeders(
+		userRepo,
+		roleRepo,
+		endpointRepo,
+		trackRepo,
+	)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 

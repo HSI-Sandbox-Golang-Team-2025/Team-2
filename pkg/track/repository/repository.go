@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
 	"gorm.io/gorm"
@@ -15,11 +16,49 @@ func NewRepository(db *gorm.DB) Repository {
 	return &repository{db: db}
 }
 
-func (r *repository) CreateTrack(ctx context.Context, t track.Track) (*track.Track, error) {
-	if err := r.db.WithContext(ctx).Create(&t).Error; err != nil {
-		return nil, err
+func (r *repository) CreateTrack(
+	ctx context.Context,
+	t *track.Track,
+) error {
+	findTrackCondition := FindTrackCondition{Track: *t}
+
+	if err := r.GetTrack(ctx, t, &findTrackCondition); err == nil {
+		return errors.New("Track is already registered")
 	}
-	return &t, nil
+
+	if err := r.db.WithContext(ctx).Create(&t).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type FindTrackCondition struct {
+	track.Track
+}
+
+func (r *repository) GetTrack(
+	ctx context.Context,
+	t *track.Track,
+	condition *FindTrackCondition,
+) error {
+	db := r.db.WithContext(ctx)
+
+	if condition.ID != 0 {
+		db = db.Where("id = ?", condition.ID)
+	}
+
+	if condition.Name != "" {
+		db = db.Where("name = ?", condition.Name)
+	}
+
+	err := db.First(&t).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *repository) GetTrackByID(ctx context.Context, id int64) (*track.Track, error) {
