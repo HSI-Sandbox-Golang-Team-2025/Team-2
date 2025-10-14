@@ -7,7 +7,15 @@ import (
 )
 
 type Repository interface {
-	CreateTrack(ctx context.Context, t track.Track) (*track.Track, error)
+	CreateTrack(
+		ctx context.Context,
+		t *track.Track,
+	) error
+	GetTrack(
+		ctx context.Context,
+		t *track.Track,
+		condition *FindTrackCondition,
+	) error
 	GetTrackByID(ctx context.Context, id int64) (*track.Track, error)
 	GetAllTrack(ctx context.Context) ([]track.Track, error)
 	UpdateTrack(ctx context.Context, t track.Track) error

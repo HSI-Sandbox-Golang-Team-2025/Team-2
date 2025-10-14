@@ -5,6 +5,7 @@ import (
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/repository"
+	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
@@ -18,7 +19,10 @@ func NewService(r repository.Repository) Service {
 }
 
 func (s *service) CreateTrack(ctx context.Context, t track.Track) (*track.Track, error) {
-	return s.repository.CreateTrack(ctx, t)
+	if err := s.repository.CreateTrack(ctx, &t); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return &t, nil
 }
 
 func (s *service) GetTrackByID(ctx context.Context, id int64) (*track.Track, error) {

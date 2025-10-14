@@ -190,6 +190,7 @@ func main() {
 		userRepo,
 		roleRepo,
 		endpointRepo,
+		trackRepo,
 	)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)

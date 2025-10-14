@@ -10,6 +10,8 @@ import (
 	endpointRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	roleRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track"
+	trackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/track/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 )
@@ -18,22 +20,26 @@ type seeder struct {
 	userRepo     userRepository.Repository
 	roleRepo     roleRepository.Repository
 	endpointRepo endpointRepository.Repository
+	trackRepo    trackRepository.Repository
 }
 
 func RunSeeders(
 	userRepo userRepository.Repository,
 	roleRepo roleRepository.Repository,
 	endpointRepo endpointRepository.Repository,
+	trackRepo trackRepository.Repository,
 ) {
 	s := &seeder{
 		userRepo:     userRepo,
 		roleRepo:     roleRepo,
 		endpointRepo: endpointRepo,
+		trackRepo:    trackRepo,
 	}
 
 	s.runRoleSeeder()
 	s.runUserSeeder()
 	s.runEndpointSeeder()
+	s.runTrackSeeder()
 }
 
 func (s *seeder) runRoleSeeder() error {
@@ -364,6 +370,22 @@ func (s *seeder) runEndpointSeeder() error {
 
 	for _, e := range endpoints {
 		s.endpointRepo.CreateEndpoint(context.Background(), &e)
+	}
+
+	return nil
+}
+
+func (s *seeder) runTrackSeeder() error {
+	tracks := []track.Track{
+		{Name: "Flutter Development"},
+		{Name: "NextJs Development"},
+		{Name: "Golang Development"},
+		{Name: "Phyton (Django) Development"},
+		{Name: "UI/UX Design"},
+	}
+
+	for _, t := range tracks {
+		s.trackRepo.CreateTrack(context.Background(), &t)
 	}
 
 	return nil
