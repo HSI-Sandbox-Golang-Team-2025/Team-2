@@ -31,9 +31,18 @@ func (m *middleware) JWT(c *fiber.Ctx) error {
 	methodByte := c.Request().Header.Method()
 	method := string(methodByte)
 
+	e := endpoint.Endpoint{}
+
+	// Check endpoint
+	err := m.db.WithContext(context.Background()).
+		Joins("JOIN acls ON acls.endpoint_id = endpoints.id AND acls.role_id IS NULL").
+		Where("endpoints.path = ? AND endpoints.method = ?", path, method).
+		First(&e).
+		Error
+
 	u := user.User{}
 
-	if authHeader != "" {
+	if authHeader != "" && err == gorm.ErrRecordNotFound {
 		claims, err := lib.ParseJwt(authHeader)
 
 		if err != nil {
@@ -47,21 +56,19 @@ func (m *middleware) JWT(c *fiber.Ctx) error {
 			Error
 
 		if err != nil {
-			return fiber.NewError(fiber.StatusUnauthorized, err.Error())
+			return fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
 		}
-	}
 
-	e := endpoint.Endpoint{}
+		// Check endpoint and path permission
+		err = m.db.WithContext(context.Background()).
+			Joins("JOIN acls ON acls.endpoint_id = endpoints.id AND acls.role_id = ?", u.RoleID).
+			Where("endpoints.path = ? AND endpoints.method = ?", path, method).
+			First(&e).
+			Error
 
-	// Check endpoint and path permission
-	err := m.db.WithContext(context.Background()).
-		Joins("JOIN acls ON acls.endpoint_id = endpoints.id AND (acls.role_id = ? or acls.role_id IS null)", u.RoleID).
-		Where("endpoints.path = ? AND endpoints.method = ?", path, method).
-		First(&e).
-		Error
-
-	if err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+		if err != nil {
+			return fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+		}
 	}
 
 	c.Locals("id", u.ID)
