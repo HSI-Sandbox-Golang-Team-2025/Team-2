@@ -58,6 +58,14 @@ func (r *repository) GetUserPractice(
 		db = db.Where("id = ?", condition.ID)
 	}
 
+	if condition.UserID != 0 {
+		db = db.Where("user_id = ?", condition.UserID)
+	}
+
+	if condition.ContentID != 0 {
+		db = db.Where("content_id = ?", condition.ContentID)
+	}
+
 	if condition.Status != "" {
 		db = db.Where("status = ?", condition.Status)
 	}
@@ -76,17 +84,35 @@ func (r *repository) GetUserPractice(
 func (r *repository) GetUserPractices(
 	ctx context.Context,
 	up *[]user_practice.UserPractice,
-	queries map[string]string,
+	condition *GetUserPracticeCondition,
 ) error {
-	err := r.db.
+	db := r.db.
 		WithContext(ctx).
 		Preload("UserPracticeRecords").
 		Preload("UserPracticeRecords.Question").
-		Preload("UserPracticeRecords.QuestionAnswerChoice").
-		Find(&up).
-		Error
+		Preload("UserPracticeRecords.QuestionAnswerChoice")
 
-	if err != nil {
+	if condition.ID != 0 {
+		db = db.Where("id = ?", condition.ID)
+	}
+
+	if condition.UserID != 0 {
+		db = db.Where("user_id = ?", condition.UserID)
+	}
+
+	if condition.ContentID != 0 {
+		db = db.Where("content_id = ?", condition.ContentID)
+	}
+
+	if condition.Status != "" {
+		db = db.Where("status = ?", condition.Status)
+	}
+
+	if condition.UserPracticeRecordIds != nil {
+		db = db.Preload("UserPracticeRecords", "id IN ?", condition.UserPracticeRecordIds)
+	}
+
+	if err := db.Find(&up).Error; err != nil {
 		return err
 	}
 

@@ -5,6 +5,7 @@ import (
 	"slices"
 	"strconv"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record"
@@ -27,53 +28,47 @@ func NewService(
 	}
 }
 
-func (s *service) StartUserPractice(
-	ctx context.Context,
-	paramId string,
-) (*user_practice.UserPractice, error) {
-	userPractice := user_practice.UserPractice{}
-
-	id, _ := strconv.Atoi(paramId)
-
-	condition := repository.GetUserPracticeCondition{
-		ID:     uint(id),
-		Status: user_practice.Opened,
-	}
-
-	err := s.userPracticeRepo.GetUserPractice(
-		ctx,
-		&userPractice,
-		&condition,
-	)
-
-	if err != nil {
-		return nil, fiber.NewError(fiber.StatusInternalServerError, "User practice not found!")
-	}
-
-	userPractice.Status = user_practice.InProgress
-
-	err = s.userPracticeRepo.UpdateUserPractice(ctx, &userPractice)
-
-	if err != nil {
-		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	}
-
-	return &userPractice, nil
-}
-
 func (s *service) GetUserPractices(
 	ctx context.Context,
 	queries map[string]string,
+	user *user.User,
 ) (*[]user_practice.UserPractice, error) {
 	userPractices := []user_practice.UserPractice{}
 
-	err := s.userPracticeRepo.GetUserPractices(ctx, &userPractices, queries)
+	condition := repository.GetUserPracticeCondition{}
+
+	contentId, _ := strconv.Atoi(queries["contentId"])
+
+	condition.UserID = user.ID
+	condition.ContentID = uint(contentId)
+
+	err := s.userPracticeRepo.GetUserPractices(ctx, &userPractices, &condition)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	return &userPractices, nil
+}
+
+func (s *service) StartUserPractice(
+	ctx context.Context,
+	body user_practice.UserPractice,
+	user user.User,
+) (*user_practice.UserPractice, error) {
+	userPractice := user_practice.UserPractice{}
+
+	userPractice.UserID = user.ID
+	userPractice.ContentID = body.ContentID
+	userPractice.Status = user_practice.InProgress
+
+	err := s.userPracticeRepo.StartUserPractice(ctx, &userPractice)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &userPractice, nil
 }
 
 func (s *service) SubmitUserPractice(
@@ -143,6 +138,7 @@ func (s *service) ReviewUserPractice(
 
 	userPractice.Status = user_practice.Reviewed
 	userPractice.Score = body.Score
+	userPractice.Comment = body.Comment
 
 	err = s.userPracticeRepo.UpdateUserPractice(ctx, &userPractice)
 

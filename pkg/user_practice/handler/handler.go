@@ -3,6 +3,8 @@ package handler
 import (
 	"context"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/middleware"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/service"
 	"github.com/gofiber/fiber/v2"
@@ -12,17 +14,21 @@ type handler struct {
 	service service.Service
 }
 
-func NewHandler(app fiber.Router, s service.Service) {
+func NewHandler(
+	app fiber.Router,
+	m middleware.Middleware,
+	s service.Service,
+) {
 	h := &handler{
 		service: s,
 	}
 
 	group := app.Group("/user-practices")
 
-	group.Get("/", h.GetUserPractices)
-	group.Patch("/:id/start", h.StartUserPractice)
-	group.Patch("/:id/submit", h.SubmitUserPractice)
-	group.Patch("/:id/review", h.ReviewUserPractice)
+	group.Post("/", m.JWT, h.StartUserPractice)
+	group.Get("/", m.JWT, h.GetUserPractices)
+	group.Patch("/:id/submit", m.JWT, h.SubmitUserPractice)
+	group.Patch("/:id/review", m.JWT, h.ReviewUserPractice)
 }
 
 // login godoc
@@ -33,7 +39,10 @@ func NewHandler(app fiber.Router, s service.Service) {
 // @Produce json
 // @Router /user-practices [get]
 func (h *handler) GetUserPractices(c *fiber.Ctx) error {
-	data, err := h.service.GetUserPractices(context.Background(), c.Queries())
+	user := user.User{}
+	user.ID = c.Locals("userId").(uint)
+
+	data, err := h.service.GetUserPractices(context.Background(), c.Queries(), &user)
 
 	if err != nil {
 		return err
@@ -51,9 +60,18 @@ func (h *handler) GetUserPractices(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Router /user-practices/:id/start [patch]
+// @Router /user-practices [post]
 func (h *handler) StartUserPractice(c *fiber.Ctx) error {
-	data, err := h.service.StartUserPractice(context.Background(), c.Params("id"))
+	body := user_practice.UserPractice{}
+
+	if err := c.BodyParser(&body); err != nil {
+		return err
+	}
+
+	user := user.User{}
+	user.ID = c.Locals("userId").(uint)
+
+	data, err := h.service.StartUserPractice(context.Background(), body, user)
 
 	if err != nil {
 		return err

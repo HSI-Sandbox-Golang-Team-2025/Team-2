@@ -3,13 +3,15 @@ package service
 import (
 	"context"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 )
 
 type Service interface {
 	StartUserPractice(
 		ctx context.Context,
-		paramId string,
+		body user_practice.UserPractice,
+		user user.User,
 	) (*user_practice.UserPractice, error)
 	SubmitUserPractice(
 		ctx context.Context,
@@ -24,5 +26,6 @@ type Service interface {
 	GetUserPractices(
 		ctx context.Context,
 		queries map[string]string,
+		user *user.User,
 	) (*[]user_practice.UserPractice, error)
 }

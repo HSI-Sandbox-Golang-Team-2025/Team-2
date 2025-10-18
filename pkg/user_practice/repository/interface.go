@@ -16,7 +16,7 @@ type Repository interface {
 	GetUserPractices(
 		ctx context.Context,
 		userPractices *[]user_practice.UserPractice,
-		queries map[string]string,
+		queries *GetUserPracticeCondition,
 	) error
 	GetUserPractice(
 		ctx context.Context,

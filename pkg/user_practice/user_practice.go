@@ -20,7 +20,7 @@ type UserPractice struct {
 type UserPracticeStatus string
 
 const (
-	Opened     UserPracticeStatus = "opened"
+	// Opened     UserPracticeStatus = "opened"
 	InProgress UserPracticeStatus = "in progress"
 	Submitted  UserPracticeStatus = "submitted"
 	Reviewed   UserPracticeStatus = "reviewed"
