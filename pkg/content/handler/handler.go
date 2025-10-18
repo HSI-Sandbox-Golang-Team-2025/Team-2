@@ -27,6 +27,16 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Delete("/:id", h.DeleteContent)
 }
 
+// CreateContent godoc
+// @Summary Create content
+// @Description Create a new learning content
+// @Tags Content
+// @Accept json
+// @Produce json
+// @Param data body content.Content true "Content Data"
+// @Success 201 {object} content.Content
+// @Failure 400 {object} fiber.Map
+// @Router /contents [post]
 func (h *handler) CreateContent(c *fiber.Ctx) error {
 	var req content.Content
 
@@ -46,14 +56,14 @@ func (h *handler) CreateContent(c *fiber.Ctx) error {
 	})
 }
 
-// getContents godoc
-// @Summary Get learning contents
-// @Description Get learning contents (materials, practices and projects)
-// @Tags Contents
+// GetContents godoc
+// @Summary List contents
+// @Description Get all learning contents
+// @Tags Content
 // @Accept json
 // @Produce json
-// @Param trackId query string false "track.id" example(1)
-// @Success 200 {object} GetContentsSuccessResponse "Get contents success!"
+// @Success 200 {array} content.Content
+// @Failure 500 {object} fiber.Map
 // @Router /contents [get]
 func (h *handler) GetContents(c *fiber.Ctx) error {
 	data, err := h.service.GetContents(context.Background(), c.Queries())
@@ -68,14 +78,15 @@ func (h *handler) GetContents(c *fiber.Ctx) error {
 	})
 }
 
-// getContent godoc
-// @Summary Get learning content
-// @Description Get learning content (materials, practices and projects)
-// @Tags Contents
+// GetContent godoc
+// @Summary Get content by ID
+// @Description Get a learning content by its ID
+// @Tags Content
 // @Accept json
 // @Produce json
-// @Param id path int true "content.id" example(1)
-// @Success 200 {object} GetContentSuccessResponse "Get content success!
+// @Param id path int true "Content ID"
+// @Success 200 {object} content.Content
+// @Failure 404 {object} fiber.Map
 // @Router /contents/{id} [get]
 func (h *handler) GetContent(c *fiber.Ctx) error {
 	data, err := h.service.GetContent(context.Background(), c.Params("id"))
@@ -90,6 +101,17 @@ func (h *handler) GetContent(c *fiber.Ctx) error {
 	})
 }
 
+// UpdateContent godoc
+// @Summary Update content
+// @Description Update a learning content by ID
+// @Tags Content
+// @Accept json
+// @Produce json
+// @Param id path int true "Content ID"
+// @Param data body content.Content true "Content Data"
+// @Success 200 {object} content.Content
+// @Failure 400 {object} fiber.Map
+// @Router /contents/{id} [put]
 func (h *handler) UpdateContent(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
@@ -112,6 +134,16 @@ func (h *handler) UpdateContent(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
+// DeleteContent godoc
+// @Summary Delete content
+// @Description Delete a learning content by ID
+// @Tags Content
+// @Accept json
+// @Produce json
+// @Param id path int true "Content ID"
+// @Success 204 {object} fiber.Map
+// @Failure 400 {object} fiber.Map
+// @Router /contents/{id} [delete]
 func (h *handler) DeleteContent(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	_ "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/docs"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/middleware"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/acl"
