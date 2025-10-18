@@ -115,8 +115,9 @@ func main() {
 
 	db.Exec(
 		fmt.Sprintf(
-			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s', '%s');",
-			user_practice.Opened,
+			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s');",
+			// "CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s', '%s');",
+			// user_practice.Opened,
 			user_practice.InProgress,
 			user_practice.Submitted,
 			user_practice.Reviewed,
@@ -147,7 +148,8 @@ func main() {
 
 	middleware := middleware.NewMiddleware(db)
 
-	route := app.Group("/api", middleware.JWT)
+	// route := app.Group("/api", middleware.JWT)
+	route := app.Group("/api")
 
 	// Create new repos
 	authRepo := authRepository.NewRepository(db)
@@ -176,11 +178,11 @@ func main() {
 
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
-	contentHandler.NewHandler(route, contentSvc)
+	contentHandler.NewHandler(route, middleware, contentSvc)
 	practiceHandler.NewHandler(route, practiceSvc)
 	projectHandler.NewHandler(route, projectSvc)
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
-	userPracticeHandler.NewHandler(route, userPracticeSvc)
+	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
 	userProjectHandler.NewHandler(route, userProjectSvc)
 	userHandler.NewHandler(route, userSvc)
 	userTrackHandler.NewHandler(route, userTrackSvc)
