@@ -8,14 +8,14 @@ import (
 
 type Content struct {
 	basic_model.BasicModel
-	TrackID       uint                          `json:"trackId"`
-	Title         string                        `json:"title"`
-	Body          string                        `json:"body"`
-	Type          ContentType                   `json:"type" gorm:"type:content_types"`
-	Order         uint                          `json:"order"`
-	Questions     *[]question.Question          `json:"questions" swaggertype:"string" example:"null" extension:"x-nullable"`
-	IsCompleted   bool                          `json:"isCompleted" gorm:"-:migration"`
-	UserPractices *[]user_practice.UserPractice `json:"userPractices"`
+	TrackID       uint                          `json:"trackId" example:"1" extensions:"x-order=04"`
+	Title         string                        `json:"title" example:"Latihan 2" extensions:"x-order=05"`
+	Body          string                        `json:"body" example:"Latihan ini anda akan menguji kemampuan React anda" extensions:"x-order=06"`
+	Type          ContentType                   `json:"type" gorm:"type:content_types" example:"practice" extensions:"x-order=07"`
+	Order         uint                          `json:"order" example:"1" extensions:"x-order=08"`
+	Questions     *[]question.Question          `json:"questions" extensions:"x-order=09"`
+	IsCompleted   bool                          `json:"isCompleted" gorm:"<-:false;-:migration" example:"false" extensions:"x-order=10"`
+	UserPractices *[]user_practice.UserPractice `json:"userPractices" extensions:"x-order=11"`
 }
 
 type ContentType string

@@ -32,7 +32,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
+                            "$ref": "#/definitions/pkg_auth_handler.LoginBody"
                         }
                     }
                 ],
@@ -40,13 +40,13 @@
                     "200": {
                         "description": "Login success!",
                         "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                            "$ref": "#/definitions/pkg_auth_handler.SuccessLoginResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid credentials!",
                         "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                            "$ref": "#/definitions/pkg_auth_handler.InvalidLoginResponse"
                         }
                     }
                 }
@@ -72,7 +72,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.RegisterBody"
+                            "$ref": "#/definitions/pkg_auth_handler.RegisterBody"
                         }
                     }
                 ],
@@ -80,13 +80,13 @@
                     "200": {
                         "description": "Registration success!",
                         "schema": {
-                            "$ref": "#/definitions/handler.SuccessRegisterResponse"
+                            "$ref": "#/definitions/pkg_auth_handler.SuccessRegisterResponse"
                         }
                     },
                     "400": {
                         "description": "[Error message]",
                         "schema": {
-                            "$ref": "#/definitions/handler.InvalidRegisterResponse"
+                            "$ref": "#/definitions/pkg_auth_handler.InvalidRegisterResponse"
                         }
                     }
                 }
@@ -118,7 +118,7 @@
                     "200": {
                         "description": "Get contents success!",
                         "schema": {
-                            "$ref": "#/definitions/handler.GetContentsSuccessResponse"
+                            "$ref": "#/definitions/pkg_content_handler.GetContentsSuccessResponse"
                         }
                     }
                 }
@@ -151,7 +151,7 @@
                     "200": {
                         "description": "Get content success!",
                         "schema": {
-                            "$ref": "#/definitions/handler.GetContentSuccessResponse"
+                            "$ref": "#/definitions/pkg_content_handler.GetContentSuccessResponse"
                         }
                     }
                 }
@@ -159,7 +159,7 @@
         },
         "/practices": {
             "post": {
-                "description": "Authenticate user with static credentials and return JWT token",
+                "description": "Create a new practice content",
                 "consumes": [
                     "application/json"
                 ],
@@ -167,31 +167,31 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Backlog"
+                    "Practice"
                 ],
-                "summary": "User login",
+                "summary": "Create practice content",
                 "parameters": [
                     {
-                        "description": "Login credentials",
+                        "description": "Create practice content data",
                         "name": "credentials",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
+                            "$ref": "#/definitions/pkg_practice_handler.CreatePracticeBody"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Get content success!",
+                    "201": {
+                        "description": "Get practice content success!",
                         "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
+                            "$ref": "#/definitions/pkg_practice_handler.CreatePracticeSuccessResponse"
                         }
                     },
                     "400": {
-                        "description": "Invalid credentials!",
+                        "description": "Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
+                            "$ref": "#/definitions/pkg_practice_handler.CreatePracticeErrorResponse"
                         }
                     }
                 }
@@ -210,31 +210,7 @@
                     "Backlog"
                 ],
                 "summary": "User login",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-practices": {
@@ -250,31 +226,7 @@
                     "Backlog"
                 ],
                 "summary": "User login",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-practices/:id/review": {
@@ -290,31 +242,7 @@
                     "Backlog"
                 ],
                 "summary": "User login",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-practices/:id/start": {
@@ -330,31 +258,7 @@
                     "Backlog"
                 ],
                 "summary": "User login",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-practices/:id/submit": {
@@ -370,31 +274,7 @@
                     "Backlog"
                 ],
                 "summary": "User login",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-projects": {
@@ -410,31 +290,7 @@
                     "Backlog"
                 ],
                 "summary": "Get user projects",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             },
             "post": {
                 "description": "Authenticate user with static credentials and return JWT token",
@@ -448,31 +304,7 @@
                     "Backlog"
                 ],
                 "summary": "Start user project",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-projects/:id/review": {
@@ -488,31 +320,7 @@
                     "Backlog"
                 ],
                 "summary": "Review user projects",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user-projects/:id/submit": {
@@ -528,81 +336,84 @@
                     "Backlog"
                 ],
                 "summary": "Submit user project",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get content success!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.SuccessLoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid credentials!",
-                        "schema": {
-                            "$ref": "#/definitions/handler.InvalidLoginResponse"
-                        }
-                    }
-                }
+                "responses": {}
             }
         }
     },
     "definitions": {
-        "content.Content": {
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content": {
             "type": "object",
             "properties": {
-                "body": {
-                    "type": "string"
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
                 },
                 "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isCompleted": {
-                    "type": "boolean"
-                },
-                "order": {
-                    "type": "integer"
-                },
-                "questions": {
                     "type": "string",
-                    "example": "null"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "trackId": {
-                    "type": "integer"
-                },
-                "type": {
-                    "$ref": "#/definitions/content.ContentType"
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
                 },
                 "updatedAt": {
-                    "type": "string"
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
+                },
+                "trackId": {
+                    "type": "integer",
+                    "x-order": "04",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "Latihan 2"
+                },
+                "body": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "Latihan ini anda akan menguji kemampuan React anda"
+                },
+                "type": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType"
+                        }
+                    ],
+                    "x-order": "07",
+                    "example": "practice"
+                },
+                "order": {
+                    "type": "integer",
+                    "x-order": "08",
+                    "example": 1
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question.Question"
+                    },
+                    "x-order": "09"
+                },
+                "isCompleted": {
+                    "type": "boolean",
+                    "x-order": "10",
+                    "example": false
                 },
                 "userPractices": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_practice.UserPractice"
-                    }
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                    },
+                    "x-order": "11"
                 }
             }
         },
-        "content.ContentType": {
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType": {
             "type": "string",
             "enum": [
                 "material",
@@ -615,165 +426,146 @@
                 "ContentTypeProject"
             ]
         },
-        "handler.GetContentSuccessResponse": {
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question.Question": {
             "type": "object",
             "properties": {
-                "data": {
-                    "$ref": "#/definitions/content.Content"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Get content success!"
-                }
-            }
-        },
-        "handler.GetContentsSuccessResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/content.Content"
-                    }
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Get content success!"
-                }
-            }
-        },
-        "handler.InvalidLoginResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Invalid Credentials!"
-                }
-            }
-        },
-        "handler.InvalidRegisterResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Registration failed!"
-                }
-            }
-        },
-        "handler.LoginBody": {
-            "type": "object",
-            "properties": {
-                "nip": {
-                    "type": "string",
-                    "example": "ARN-2402001"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "123"
-                }
-            }
-        },
-        "handler.RegisterBody": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Teguh"
-                },
-                "nip": {
-                    "type": "string",
-                    "example": "ARN-2402001"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "123"
-                }
-            }
-        },
-        "handler.SuccessLoginData": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUz.."
-                }
-            }
-        },
-        "handler.SuccessLoginResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/handler.SuccessLoginData"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Login success!"
-                }
-            }
-        },
-        "handler.SuccessRegisterData": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUz.."
-                }
-            }
-        },
-        "handler.SuccessRegisterResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/handler.SuccessRegisterData"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Registration success!"
-                }
-            }
-        },
-        "user_practice.UserPractice": {
-            "type": "object",
-            "properties": {
-                "comment": {
-                    "type": "string"
-                },
-                "contentId": {
-                    "type": "integer"
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
                 },
                 "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "score": {
-                    "type": "number"
-                },
-                "status": {
-                    "$ref": "#/definitions/user_practice.UserPracticeStatus"
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
                 },
                 "updatedAt": {
-                    "type": "string"
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
                 },
-                "user": {
-                    "type": "string"
+                "deletedAt": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
+                },
+                "contentId": {
+                    "type": "integer",
+                    "x-order": "04",
+                    "example": 1
+                },
+                "answerChoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question_answer_choice.QuestionAnswerChoice"
+                    },
+                    "x-order": "05"
+                },
+                "question": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "Apakah 1 + 1 = 2"
+                }
+            }
+        },
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question_answer_choice.QuestionAnswerChoice": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
+                },
+                "questionId": {
+                    "type": "integer",
+                    "x-order": "04",
+                    "example": 1
+                },
+                "answer": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "Benar"
+                }
+            }
+        },
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "x-order": "04",
+                    "example": 1
+                },
+                "user": {
+                    "type": "string",
+                    "x-order": "05"
+                },
+                "contentId": {
+                    "type": "integer",
+                    "x-order": "06",
+                    "example": 1
+                },
+                "status": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus"
+                        }
+                    ],
+                    "x-order": "07",
+                    "example": "opened"
+                },
+                "score": {
+                    "type": "number",
+                    "x-order": "08",
+                    "example": 100
+                },
+                "comment": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "Good job!"
                 },
                 "userPracticeRecords": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_practice_record.UserPracticeRecord"
-                    }
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice_record.UserPracticeRecord"
+                    },
+                    "x-order": "10"
                 }
             }
         },
-        "user_practice.UserPracticeStatus": {
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus": {
             "type": "string",
             "enum": [
                 "opened",
@@ -788,17 +580,27 @@
                 "Reviewed"
             ]
         },
-        "user_practice_record.UserPracticeRecord": {
+        "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice_record.UserPracticeRecord": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
+                },
                 "createdAt": {
-                    "type": "string"
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
                 },
                 "deletedAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
                 },
                 "isCorrect": {
                     "type": "boolean"
@@ -818,11 +620,263 @@
                 "questionId": {
                     "type": "integer"
                 },
-                "updatedAt": {
-                    "type": "string"
-                },
                 "userPracticeId": {
                     "type": "integer"
+                }
+            }
+        },
+        "pkg_auth_handler.InvalidLoginResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Invalid Credentials!"
+                }
+            }
+        },
+        "pkg_auth_handler.InvalidRegisterResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Registration failed!"
+                }
+            }
+        },
+        "pkg_auth_handler.LoginBody": {
+            "type": "object",
+            "properties": {
+                "nip": {
+                    "type": "string",
+                    "example": "ARN-2402001"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "123"
+                }
+            }
+        },
+        "pkg_auth_handler.RegisterBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Teguh"
+                },
+                "nip": {
+                    "type": "string",
+                    "example": "ARN-2402001"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "123"
+                }
+            }
+        },
+        "pkg_auth_handler.SuccessLoginData": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUz.."
+                }
+            }
+        },
+        "pkg_auth_handler.SuccessLoginResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/pkg_auth_handler.SuccessLoginData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Login success!"
+                }
+            }
+        },
+        "pkg_auth_handler.SuccessRegisterData": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUz.."
+                }
+            }
+        },
+        "pkg_auth_handler.SuccessRegisterResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/pkg_auth_handler.SuccessRegisterData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Registration success!"
+                }
+            }
+        },
+        "pkg_content_handler.GetContentSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Get content success!"
+                }
+            }
+        },
+        "pkg_content_handler.GetContentsSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.Content"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Get content success!"
+                }
+            }
+        },
+        "pkg_practice_handler.AnswerChoice": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string",
+                    "example": "Benar"
+                }
+            }
+        },
+        "pkg_practice_handler.Content": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
+                },
+                "trackId": {
+                    "type": "integer",
+                    "x-order": "04",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "Latihan 2"
+                },
+                "body": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "Latihan ini anda akan menguji kemampuan React anda"
+                },
+                "type": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType"
+                        }
+                    ],
+                    "x-order": "07",
+                    "example": "practice"
+                },
+                "order": {
+                    "type": "integer",
+                    "x-order": "08",
+                    "example": 1
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question.Question"
+                    },
+                    "x-order": "09"
+                },
+                "isCompleted": {
+                    "type": "boolean",
+                    "x-order": "10",
+                    "example": false
+                },
+                "userPractices": {
+                    "type": "string",
+                    "x-order:11": true,
+                    "example": "null"
+                }
+            }
+        },
+        "pkg_practice_handler.CreatePracticeBody": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "Latihan ini anda akan menguji kemampuan React anda"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pkg_practice_handler.Question"
+                    }
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Latihan 2"
+                },
+                "trackId": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "pkg_practice_handler.CreatePracticeErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "[Error message]"
+                }
+            }
+        },
+        "pkg_practice_handler.CreatePracticeSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/pkg_practice_handler.Content"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Create practice content success!"
+                }
+            }
+        },
+        "pkg_practice_handler.Question": {
+            "type": "object",
+            "properties": {
+                "answerChoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pkg_practice_handler.AnswerChoice"
+                    }
+                },
+                "question": {
+                    "type": "string",
+                    "example": "Apakah 1 + 1 = 2"
                 }
             }
         }

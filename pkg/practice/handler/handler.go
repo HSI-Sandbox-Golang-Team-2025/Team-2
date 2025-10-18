@@ -22,15 +22,15 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Post("/", h.CreatePractice)
 }
 
-// login godoc
-// @Summary User login
-// @Description Authenticate user with static credentials and return JWT token
-// @Tags Backlog
+// createPractice godoc
+// @Summary Create practice content
+// @Description Create a new practice content
+// @Tags Practice
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
+// @Param credentials body CreatePracticeBody true "Create practice content data"
+// @Success 201 {object} CreatePracticeSuccessResponse "Get practice content success!"
+// @Failure 500 {object} CreatePracticeErrorResponse "Error"
 // @Router /practices [post]
 func (h *handler) CreatePractice(c *fiber.Ctx) error {
 	var body content.Content
@@ -46,7 +46,7 @@ func (h *handler) CreatePractice(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Create practice success!",
+		"message": "Create practice content success!",
 		"data":    data,
 	})
 }
