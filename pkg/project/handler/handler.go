@@ -22,12 +22,15 @@ func NewHandler(app fiber.Router, s service.Service) {
 	group.Post("/", h.CreateProject)
 }
 
-// login godoc
-// @Summary User login
-// @Description Authenticate user with static credentials and return JWT token
-// @Tags Backlog
+// createProject godoc
+// @Summary Create project content
+// @Description Create a new project content
+// @Tags Project
 // @Accept json
 // @Produce json
+// @Param credentials body CreateProjectBody true "Create project content data"
+// @Success 201 {object} CreateProjectSuccessResponse "Get project content success!"
+// @Failure 500 {object} CreateProjectErrorResponse "Error"
 // @Router /projects [post]
 func (h *handler) CreateProject(c *fiber.Ctx) error {
 	var body content.Content
