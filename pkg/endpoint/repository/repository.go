@@ -23,6 +23,7 @@ type FindEndpointCondition struct {
 func (r *repository) GetEndpoint(ctx context.Context, e *endpoint.Endpoint, condition *FindEndpointCondition) error {
 	err := r.db.WithContext(ctx).
 		Where("path = ?", condition.Path).
+		Where("method = ?", condition.Method).
 		First(&e).
 		Error
 
