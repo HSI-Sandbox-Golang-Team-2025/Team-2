@@ -31,9 +31,6 @@ func NewHandler(app fiber.Router, s service.Service) {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-practices [get]
 func (h *handler) GetUserPractices(c *fiber.Ctx) error {
 	data, err := h.service.GetUserPractices(context.Background(), c.Queries())
@@ -54,9 +51,6 @@ func (h *handler) GetUserPractices(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-practices/:id/start [patch]
 func (h *handler) StartUserPractice(c *fiber.Ctx) error {
 	data, err := h.service.StartUserPractice(context.Background(), c.Params("id"))
@@ -77,9 +71,6 @@ func (h *handler) StartUserPractice(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-practices/:id/submit [patch]
 func (h *handler) SubmitUserPractice(c *fiber.Ctx) error {
 	var body user_practice.UserPractice
@@ -106,9 +97,6 @@ func (h *handler) SubmitUserPractice(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-practices/:id/review [patch]
 func (h *handler) ReviewUserPractice(c *fiber.Ctx) error {
 	var body user_practice.UserPractice

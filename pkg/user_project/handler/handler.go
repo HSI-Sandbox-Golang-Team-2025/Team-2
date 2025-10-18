@@ -31,9 +31,6 @@ func NewHandler(app fiber.Router, s service.Service) {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-projects [post]
 func (h *handler) StartUserProject(c *fiber.Ctx) error {
 	var body user_project.UserProject
@@ -60,9 +57,6 @@ func (h *handler) StartUserProject(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-projects [get]
 func (h *handler) GetUserProjects(c *fiber.Ctx) error {
 	data, err := h.service.GetUserProjects(context.Background(), c.Queries())
@@ -83,9 +77,6 @@ func (h *handler) GetUserProjects(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-projects/:id/submit [patch]
 func (h *handler) SubmitUserProject(c *fiber.Ctx) error {
 	var body user_project.UserProject
@@ -112,9 +103,6 @@ func (h *handler) SubmitUserProject(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /user-projects/:id/review [patch]
 func (h *handler) ReviewUserProjects(c *fiber.Ctx) error {
 	var body user_project.UserProject

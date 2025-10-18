@@ -28,9 +28,6 @@ func NewHandler(app fiber.Router, s service.Service) {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Param credentials body LoginBody true "Login credentials"
-// @Success 200 {object} SuccessLoginResponse "Get content success!"
-// @Failure 400 {object} InvalidLoginResponse "Invalid credentials!"
 // @Router /projects [post]
 func (h *handler) CreateProject(c *fiber.Ctx) error {
 	var body content.Content
