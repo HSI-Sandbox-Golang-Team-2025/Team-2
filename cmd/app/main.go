@@ -22,6 +22,9 @@ import (
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
 	projectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question"
+	questionHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question/handler"
+	questionRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question/repository"
+	questionService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question_answer_choice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	roleRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role/repository"
@@ -155,6 +158,7 @@ func main() {
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
 	endpointRepo := endpointRepository.NewRepository(db)
+	questionRepo := questionRepository.NewRepository(db)
 	roleRepo := roleRepository.NewRepository(db)
 	trackRepo := trackRepository.NewRepository(db)
 	userMaterialRepo := userMaterialRepository.NewRepository(db)
@@ -169,6 +173,7 @@ func main() {
 	contentSvc := contentService.NewService(contentRepo, userPracticeRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
+	questionSvc := questionService.NewService(questionRepo)
 	trackSvc := trackService.NewService(trackRepo)
 	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
 	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
@@ -181,6 +186,7 @@ func main() {
 	contentHandler.NewHandler(route, middleware, contentSvc)
 	practiceHandler.NewHandler(route, practiceSvc)
 	projectHandler.NewHandler(route, projectSvc)
+	questionHandler.NewHandler(route, middleware, questionSvc)
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
 	userProjectHandler.NewHandler(route, userProjectSvc)
