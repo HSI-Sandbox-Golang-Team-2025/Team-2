@@ -23,14 +23,12 @@ func NewHandler(app fiber.Router, m middleware.Middleware, s service.Service) {
 	group.Get("/", m.JWT, h.GetQuestions)
 }
 
-// getContents godoc
-// @Summary Get learning contents
-// @Description Get learning contents (materials, practices and projects)
-// @Tags Contents
+// getQuestions godoc
+// @Summary Get practice questions
+// @Description Get practice questions
+// @Tags Questions
 // @Accept json
 // @Produce json
-// @Param trackId query string false "track.id" example(1)
-// @Success 200 {object} GetContentsSuccessResponse "Get contents success!"
 // @Router /contents/{id}/questions [get]
 func (h *handler) GetQuestions(c *fiber.Ctx) error {
 	user := user.User{}
