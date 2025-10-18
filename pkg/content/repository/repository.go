@@ -84,7 +84,7 @@ func (r *repository) GetContent(
 		Joins("LEFT JOIN user_practices ON user_practices.content_id = contents.id AND user_practices.status = 'reviewed' AND user_practices.user_id = ?", condition.UserID).
 		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID).
 		Preload("UserPractices", "user_id = ?", condition.UserID).
-		Preload("UserPractices.UserPracticeRecords").
+		// Preload("UserPractices.UserPracticeRecords").
 		// Preload("Questions").
 		// Preload("Questions.AnswerChoices").
 		Where("contents.id = ?", condition.ID).

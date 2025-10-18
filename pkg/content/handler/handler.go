@@ -3,7 +3,9 @@ package handler
 import (
 	"context"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/middleware"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
@@ -13,18 +15,22 @@ type handler struct {
 	service service.Service
 }
 
-func NewHandler(app fiber.Router, s service.Service) {
+func NewHandler(
+	app fiber.Router,
+	m middleware.Middleware,
+	s service.Service,
+) {
 	h := &handler{
 		service: s,
 	}
 
 	group := app.Group("/contents")
 
-	group.Post("/", h.CreateContent)
-	group.Get("/", h.GetContents)
-	group.Get("/:id", h.GetContent)
-	group.Put("/:id", h.UpdateContent)
-	group.Delete("/:id", h.DeleteContent)
+	group.Post("/", m.JWT, h.CreateContent)
+	group.Get("/", m.JWT, h.GetContents)
+	group.Get("/:id", m.JWT, h.GetContent)
+	group.Put("/:id", m.JWT, h.UpdateContent)
+	group.Delete("/:id", m.JWT, h.DeleteContent)
 }
 
 func (h *handler) CreateContent(c *fiber.Ctx) error {
@@ -56,7 +62,10 @@ func (h *handler) CreateContent(c *fiber.Ctx) error {
 // @Success 200 {object} GetContentsSuccessResponse "Get contents success!"
 // @Router /contents [get]
 func (h *handler) GetContents(c *fiber.Ctx) error {
-	data, err := h.service.GetContents(context.Background(), c.Queries())
+	user := user.User{}
+	user.ID = c.Locals("userId").(uint)
+
+	data, err := h.service.GetContents(context.Background(), c.Queries(), user)
 
 	if err != nil {
 		return err
@@ -78,7 +87,10 @@ func (h *handler) GetContents(c *fiber.Ctx) error {
 // @Success 200 {object} GetContentSuccessResponse "Get content success!
 // @Router /contents/{id} [get]
 func (h *handler) GetContent(c *fiber.Ctx) error {
-	data, err := h.service.GetContent(context.Background(), c.Params("id"))
+	user := user.User{}
+	user.ID = c.Locals("userId").(uint)
+
+	data, err := h.service.GetContent(context.Background(), c.Params("id"), user)
 
 	if err != nil {
 		return err

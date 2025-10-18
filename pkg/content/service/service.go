@@ -6,7 +6,7 @@ import (
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	userPracticeRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,12 +23,12 @@ func NewService(contentRepo repository.Repository, userPracticeRepo userPractice
 	}
 }
 
-func (s *service) GetContents(ctx context.Context, queries map[string]string) (*[]content.Content, error) {
+func (s *service) GetContents(ctx context.Context, queries map[string]string, user user.User) (*[]content.Content, error) {
 	contents := []content.Content{}
 
 	trackId, _ := strconv.Atoi(queries["trackId"])
 
-	userId := uint(15) // Temporary
+	userId := user.ID
 
 	condition := repository.GetContentsCondition{
 		TrackID:  uint(trackId),
@@ -44,12 +44,12 @@ func (s *service) GetContents(ctx context.Context, queries map[string]string) (*
 	return &contents, nil
 }
 
-func (s *service) GetContent(ctx context.Context, paramId string) (*content.Content, error) {
+func (s *service) GetContent(ctx context.Context, paramId string, user user.User) (*content.Content, error) {
 	contentRes := content.Content{}
 
-	userId := uint(15) // Temporary
-
 	id, _ := strconv.Atoi(paramId)
+
+	userId := user.ID
 
 	condition := repository.GetContentCondition{
 		ID:     uint(id),
@@ -80,26 +80,28 @@ func (s *service) GetContent(ctx context.Context, paramId string) (*content.Cont
 		}
 	}
 
-	if contentRes.Type == content.ContentTypePractice {
-		userPractice := user_practice.UserPractice{}
+	// TODO: Create record to the user_contents
 
-		getUserPracticeCondition := userPracticeRepo.GetUserPracticeCondition{
-			UserID:    userId,
-			ContentID: contentRes.ID,
-			Status:    user_practice.Opened,
-		}
+	// if contentRes.Type == content.ContentTypePractice {
+	// 	userPractice := user_practice.UserPractice{}
 
-		err := s.userPracticeRepo.GetUserPractice(ctx, &userPractice, &getUserPracticeCondition)
+	// 	getUserPracticeCondition := userPracticeRepo.GetUserPracticeCondition{
+	// 		UserID:    userId,
+	// 		ContentID: contentRes.ID,
+	// 		// Status:    user_practice.Opened,
+	// 	}
 
-		if err != nil && err.Error() == "record not found" {
-			userPractice.UserID = userId
-			userPractice.ContentID = contentRes.ID
-			userPractice.Status = user_practice.Opened
+	// 	err := s.userPracticeRepo.GetUserPractice(ctx, &userPractice, &getUserPracticeCondition)
 
-			// CHECK: Kalo dia ujian berkali-kali gimana? apakah masih ada status opened?
-			s.userPracticeRepo.OpenUserPractice(ctx, &userPractice)
-		}
-	}
+	// 	if err != nil && err.Error() == "record not found" {
+	// 		userPractice.UserID = userId
+	// 		userPractice.ContentID = contentRes.ID
+	// 		// userPractice.Status = user_practice.Opened
+
+	// 		// CHECK: Kalo dia ujian berkali-kali gimana? apakah masih ada status opened?
+	// 		// s.userPracticeRepo.OpenUserPractice(ctx, &userPractice)
+	// 	}
+	// }
 
 	return &contentRes, nil
 }
