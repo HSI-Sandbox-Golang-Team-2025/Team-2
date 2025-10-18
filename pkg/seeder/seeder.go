@@ -93,28 +93,28 @@ func (s *seeder) runUserSeeder() error {
 func (s *seeder) runEndpointSeeder() error {
 	endpoints := []endpoint.Endpoint{
 		{
-			Path:   "/api/auth/register",
+			Path:   "/api/auth/register/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: nil},
 			},
 		},
 		{
-			Path:   "/api/auth/login",
+			Path:   "/api/auth/login/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: nil},
 			},
 		},
 		{
-			Path:   "/api/contents",
+			Path:   "/api/contents/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
-			Path:   "/api/contents",
+			Path:   "/api/contents/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -144,14 +144,22 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/materials",
+			Path:   "/api/contents/:id/questions/",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
+			},
+		},
+		{
+			Path:   "/api/materials/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
-			Path:   "/api/materials",
+			Path:   "/api/materials/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -181,28 +189,28 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/practices",
+			Path:   "/api/practices/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
-			Path:   "/api/projects",
+			Path:   "/api/projects/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
-			Path:   "/api/tracks",
+			Path:   "/api/tracks/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
-			Path:   "/api/tracks",
+			Path:   "/api/tracks/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -232,14 +240,14 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/user-materials",
+			Path:   "/api/user-materials/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
 			},
 		},
 		{
-			Path:   "/api/user-materials",
+			Path:   "/api/user-materials/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -269,7 +277,15 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/user-practices",
+			Path:   "/api/user-practices/",
+			Method: "POST",
+			ACLs: &[]acl.ACL{
+				{RoleID: lib.UintNil(1)},
+				{RoleID: lib.UintNil(2)},
+			},
+		},
+		{
+			Path:   "/api/user-practices/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -301,7 +317,7 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/user-projects",
+			Path:   "/api/user-projects/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -309,7 +325,7 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/user-projects",
+			Path:   "/api/user-projects/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -333,7 +349,7 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/user-tracks",
+			Path:   "/api/user-tracks/",
 			Method: "POST",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
@@ -341,7 +357,7 @@ func (s *seeder) runEndpointSeeder() error {
 			},
 		},
 		{
-			Path:   "/api/user-tracks",
+			Path:   "/api/user-tracks/",
 			Method: "GET",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
