@@ -169,13 +169,11 @@ definitions:
     type: object
   github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus:
     enum:
-    - opened
     - in progress
     - submitted
     - reviewed
     type: string
     x-enum-varnames:
-    - Opened
     - InProgress
     - Submitted
     - Reviewed
@@ -346,7 +344,7 @@ definitions:
       userPractices:
         example: "null"
         type: string
-        x-order:11: true
+        x-order: "11"
     type: object
   pkg_practice_handler.CreatePracticeBody:
     properties:
@@ -386,6 +384,89 @@ definitions:
         type: array
       question:
         example: Apakah 1 + 1 = 2
+        type: string
+    type: object
+  pkg_project_handler.Content:
+    properties:
+      body:
+        example: Latihan ini anda akan menguji kemampuan React anda
+        type: string
+        x-order: "06"
+      createdAt:
+        example: "2025-10-18T14:42:51.9782263+07:00"
+        type: string
+        x-order: "01"
+      deletedAt:
+        example: "null"
+        type: string
+        x-order: "03"
+      id:
+        type: integer
+        x-order: "00"
+      isCompleted:
+        example: false
+        type: boolean
+        x-order: "10"
+      order:
+        example: 1
+        type: integer
+        x-order: "08"
+      questions:
+        items:
+          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question.Question'
+        type: array
+        x-order: "09"
+      title:
+        example: Latihan 2
+        type: string
+        x-order: "05"
+      trackId:
+        example: 1
+        type: integer
+        x-order: "04"
+      type:
+        allOf:
+        - $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType'
+        example: practice
+        x-order: "07"
+      updatedAt:
+        example: "2025-10-18T14:42:51.9782263+07:00"
+        type: string
+        x-order: "02"
+      userPractices:
+        items:
+          $ref: '#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice'
+        type: array
+        x-order: "11"
+      userProjects:
+        example: "null"
+        type: string
+        x-order: "11"
+    type: object
+  pkg_project_handler.CreateProjectBody:
+    properties:
+      body:
+        example: Anda akan diminta untuk membuat final project
+        type: string
+      title:
+        example: Final Project
+        type: string
+      trackId:
+        example: 1
+        type: integer
+    type: object
+  pkg_project_handler.CreateProjectErrorResponse:
+    properties:
+      message:
+        example: '[Error message]'
+        type: string
+    type: object
+  pkg_project_handler.CreateProjectSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/pkg_project_handler.Content'
+      message:
+        example: Create project content success!
         type: string
     type: object
 host: localhost:3000
@@ -490,6 +571,17 @@ paths:
       summary: Get learning content
       tags:
       - Contents
+  /contents/{id}/questions:
+    get:
+      consumes:
+      - application/json
+      description: Get practice questions
+      produces:
+      - application/json
+      responses: {}
+      summary: Get practice questions
+      tags:
+      - Questions
   /practices:
     post:
       consumes:
@@ -509,7 +601,7 @@ paths:
           description: Get practice content success!
           schema:
             $ref: '#/definitions/pkg_practice_handler.CreatePracticeSuccessResponse'
-        "400":
+        "500":
           description: Error
           schema:
             $ref: '#/definitions/pkg_practice_handler.CreatePracticeErrorResponse'
@@ -520,13 +612,28 @@ paths:
     post:
       consumes:
       - application/json
-      description: Authenticate user with static credentials and return JWT token
+      description: Create a new project content
+      parameters:
+      - description: Create project content data
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/pkg_project_handler.CreateProjectBody'
       produces:
       - application/json
-      responses: {}
-      summary: User login
+      responses:
+        "201":
+          description: Get project content success!
+          schema:
+            $ref: '#/definitions/pkg_project_handler.CreateProjectSuccessResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/pkg_project_handler.CreateProjectErrorResponse'
+      summary: Create project content
       tags:
-      - Backlog
+      - Project
   /user-practices:
     get:
       consumes:
@@ -538,8 +645,7 @@ paths:
       summary: User login
       tags:
       - Backlog
-  /user-practices/:id/review:
-    patch:
+    post:
       consumes:
       - application/json
       description: Authenticate user with static credentials and return JWT token
@@ -549,7 +655,7 @@ paths:
       summary: User login
       tags:
       - Backlog
-  /user-practices/:id/start:
+  /user-practices/:id/review:
     patch:
       consumes:
       - application/json

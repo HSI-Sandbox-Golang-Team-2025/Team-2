@@ -160,6 +160,22 @@ const docTemplate = `{
                 }
             }
         },
+        "/contents/{id}/questions": {
+            "get": {
+                "description": "Get practice questions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Get practice questions",
+                "responses": {}
+            }
+        },
         "/practices": {
             "post": {
                 "description": "Create a new practice content",
@@ -191,7 +207,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/pkg_practice_handler.CreatePracticeSuccessResponse"
                         }
                     },
-                    "400": {
+                    "500": {
                         "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/pkg_practice_handler.CreatePracticeErrorResponse"
@@ -202,7 +218,7 @@ const docTemplate = `{
         },
         "/projects": {
             "post": {
-                "description": "Authenticate user with static credentials and return JWT token",
+                "description": "Create a new project content",
                 "consumes": [
                     "application/json"
                 ],
@@ -210,10 +226,34 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Backlog"
+                    "Project"
                 ],
-                "summary": "User login",
-                "responses": {}
+                "summary": "Create project content",
+                "parameters": [
+                    {
+                        "description": "Create project content data",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pkg_project_handler.CreateProjectBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Get project content success!",
+                        "schema": {
+                            "$ref": "#/definitions/pkg_project_handler.CreateProjectSuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/pkg_project_handler.CreateProjectErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/user-practices": {
@@ -230,10 +270,8 @@ const docTemplate = `{
                 ],
                 "summary": "User login",
                 "responses": {}
-            }
-        },
-        "/user-practices/:id/review": {
-            "patch": {
+            },
+            "post": {
                 "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
                     "application/json"
@@ -248,7 +286,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/user-practices/:id/start": {
+        "/user-practices/:id/review": {
             "patch": {
                 "description": "Authenticate user with static credentials and return JWT token",
                 "consumes": [
@@ -456,17 +494,17 @@ const docTemplate = `{
                     "x-order": "04",
                     "example": 1
                 },
-                "question": {
-                    "type": "string",
-                    "x-order": "05",
-                    "example": "Apakah 1 + 1 = 2"
-                },
                 "answerChoices": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question_answer_choice.QuestionAnswerChoice"
                     },
                     "x-order": "05"
+                },
+                "question": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "Apakah 1 + 1 = 2"
                 }
             }
         },
@@ -571,13 +609,11 @@ const docTemplate = `{
         "github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPracticeStatus": {
             "type": "string",
             "enum": [
-                "opened",
                 "in progress",
                 "submitted",
                 "reviewed"
             ],
             "x-enum-varnames": [
-                "Opened",
                 "InProgress",
                 "Submitted",
                 "Reviewed"
@@ -819,7 +855,7 @@ const docTemplate = `{
                 },
                 "userPractices": {
                     "type": "string",
-                    "x-order:11": true,
+                    "x-order": "11",
                     "example": "null"
                 }
             }
@@ -880,6 +916,121 @@ const docTemplate = `{
                 "question": {
                     "type": "string",
                     "example": "Apakah 1 + 1 = 2"
+                }
+            }
+        },
+        "pkg_project_handler.Content": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "x-order": "00"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "2025-10-18T14:42:51.9782263+07:00"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "null"
+                },
+                "trackId": {
+                    "type": "integer",
+                    "x-order": "04",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "Latihan 2"
+                },
+                "body": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "Latihan ini anda akan menguji kemampuan React anda"
+                },
+                "type": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_content.ContentType"
+                        }
+                    ],
+                    "x-order": "07",
+                    "example": "practice"
+                },
+                "order": {
+                    "type": "integer",
+                    "x-order": "08",
+                    "example": 1
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_question.Question"
+                    },
+                    "x-order": "09"
+                },
+                "isCompleted": {
+                    "type": "boolean",
+                    "x-order": "10",
+                    "example": false
+                },
+                "userProjects": {
+                    "type": "string",
+                    "x-order": "11",
+                    "example": "null"
+                },
+                "userPractices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_HSI-Sandbox-Golang-Team-2025_Team-2_pkg_user_practice.UserPractice"
+                    },
+                    "x-order": "11"
+                }
+            }
+        },
+        "pkg_project_handler.CreateProjectBody": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "Anda akan diminta untuk membuat final project"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Final Project"
+                },
+                "trackId": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "pkg_project_handler.CreateProjectErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "[Error message]"
+                }
+            }
+        },
+        "pkg_project_handler.CreateProjectSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/pkg_project_handler.Content"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Create project content success!"
                 }
             }
         }
