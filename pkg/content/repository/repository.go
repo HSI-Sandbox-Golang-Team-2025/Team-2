@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	"gorm.io/gorm"
@@ -23,6 +24,7 @@ type GetContentsCondition struct {
 	UserID        uint
 	HideBody      bool
 	OnlyCompleted bool
+	Limit         uint
 }
 
 func (r *repository) GetContents(ctx context.Context, c *[]content.Content, condition *GetContentsCondition) error {
@@ -38,7 +40,12 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 	db = db.
 		Joins("LEFT JOIN user_practices ON user_practices.content_id = contents.id AND user_practices.status = 'reviewed' AND user_practices.user_id = ?", condition.UserID).
 		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID).
-		Preload("UserPractices", "user_id = ?", condition.UserID)
+		Preload("UserPractices", "user_id = ?", condition.UserID).
+		Preload("UserProjects", "user_id = ?", condition.UserID)
+
+	if condition.ID != 0 {
+		db = db.Where("contents.id = ?", condition.ID)
+	}
 
 	if condition.Type != "" {
 		db = db.Where("contents.type = ?", condition.Type)
@@ -56,6 +63,10 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 		db = db.Where("contents.order < ?", condition.OrderBefore)
 	}
 
+	if condition.Limit != 0 {
+		db = db.Limit(int(condition.Limit))
+	}
+
 	err := db.
 		Order("contents.order").
 		Find(&c).
@@ -71,6 +82,7 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 type GetContentCondition struct {
 	ID     uint
 	UserID uint
+	Type   content.ContentType
 }
 
 func (r *repository) GetContent(
@@ -78,22 +90,21 @@ func (r *repository) GetContent(
 	c *content.Content,
 	condition *GetContentCondition,
 ) error {
-	err := r.db.WithContext(ctx).
-		Select("contents.*, CASE WHEN COALESCE(user_practices.id, user_projects.id) IS NOT null THEN true ELSE false END AS is_completed").
-		Joins("JOIN user_tracks ut ON ut.track_id = contents.track_id AND ut.user_id = ?", condition.UserID).
-		Joins("LEFT JOIN user_practices ON user_practices.content_id = contents.id AND user_practices.status = 'reviewed' AND user_practices.user_id = ?", condition.UserID).
-		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID).
-		Preload("UserPractices", "user_id = ?", condition.UserID).
-		// Preload("UserPractices.UserPracticeRecords").
-		// Preload("Questions").
-		// Preload("Questions.AnswerChoices").
-		Where("contents.id = ?", condition.ID).
-		First(&c).
-		Error
+	contents := []content.Content{}
 
-	if err != nil {
-		return err
+	getContentsCondition := GetContentsCondition{
+		ID:    condition.ID,
+		Type:  condition.Type,
+		Limit: 1,
 	}
+
+	err := r.GetContents(ctx, &contents, &getContentsCondition)
+
+	if err != nil || len(contents) < 1 {
+		return errors.New("Content not found!")
+	}
+
+	*c = contents[0]
 
 	return nil
 }

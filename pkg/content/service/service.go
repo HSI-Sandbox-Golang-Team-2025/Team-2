@@ -8,18 +8,25 @@ import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	userPracticeRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
+	userTrackRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
 	contentRepo      repository.Repository
 	userPracticeRepo userPracticeRepo.Repository
+	userTrackRepo    userTrackRepo.Repository
 }
 
-func NewService(contentRepo repository.Repository, userPracticeRepo userPracticeRepo.Repository) Service {
+func NewService(
+	contentRepo repository.Repository,
+	userPracticeRepo userPracticeRepo.Repository,
+	userTrackRepo userTrackRepo.Repository,
+) Service {
 	return &service{
 		contentRepo:      contentRepo,
 		userPracticeRepo: userPracticeRepo,
+		userTrackRepo:    userTrackRepo,
 	}
 }
 
@@ -56,11 +63,30 @@ func (s *service) GetContent(ctx context.Context, paramId string, user user.User
 		UserID: userId,
 	}
 
-	if err := s.contentRepo.GetContent(ctx, &contentRes, &condition); err != nil {
+	err := s.contentRepo.GetContent(ctx, &contentRes, &condition)
+
+	if err != nil {
 		return nil, fiber.NewError(fiber.StatusNotFound, "Content not found!")
 	}
 
-	if contentRes.Order > 1 {
+	isUserTrackValid := false
+
+	validateUserTrackCondition := userTrackRepo.ValidateUserTrackCondition{
+		TrackID: contentRes.TrackID,
+		UserID:  userId,
+	}
+
+	err = s.userTrackRepo.ValidateUserTrack(
+		ctx,
+		&isUserTrackValid,
+		&validateUserTrackCondition,
+	)
+
+	if err != nil || !isUserTrackValid {
+		return nil, fiber.NewError(fiber.StatusNotFound, "You need to register this track first!")
+	}
+
+	if contentRes.Order > 0 {
 		prevCompletedContents := []content.Content{}
 
 		getPrevCompletedContentsCondition := repository.GetContentsCondition{
@@ -70,38 +96,23 @@ func (s *service) GetContent(ctx context.Context, paramId string, user user.User
 			OnlyCompleted: true,
 		}
 
-		if err := s.contentRepo.GetContents(ctx, &prevCompletedContents, &getPrevCompletedContentsCondition); err != nil {
+		err := s.contentRepo.GetContents(
+			ctx,
+			&prevCompletedContents,
+			&getPrevCompletedContentsCondition,
+		)
+
+		if err != nil {
 			return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
-		// Is last contents completed?
-		if len(prevCompletedContents) != int(contentRes.Order-1) {
+		// Is the last contents completed?
+		if len(prevCompletedContents) != int(contentRes.Order) {
 			return nil, fiber.NewError(fiber.StatusForbidden, "Previous content is not completed yet!")
 		}
 	}
 
 	// TODO: Create record to the user_contents
-
-	// if contentRes.Type == content.ContentTypePractice {
-	// 	userPractice := user_practice.UserPractice{}
-
-	// 	getUserPracticeCondition := userPracticeRepo.GetUserPracticeCondition{
-	// 		UserID:    userId,
-	// 		ContentID: contentRes.ID,
-	// 		// Status:    user_practice.Opened,
-	// 	}
-
-	// 	err := s.userPracticeRepo.GetUserPractice(ctx, &userPractice, &getUserPracticeCondition)
-
-	// 	if err != nil && err.Error() == "record not found" {
-	// 		userPractice.UserID = userId
-	// 		userPractice.ContentID = contentRes.ID
-	// 		// userPractice.Status = user_practice.Opened
-
-	// 		// CHECK: Kalo dia ujian berkali-kali gimana? apakah masih ada status opened?
-	// 		// s.userPracticeRepo.OpenUserPractice(ctx, &userPractice)
-	// 	}
-	// }
 
 	return &contentRes, nil
 }
