@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/middleware"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	"github.com/gofiber/fiber/v2"
@@ -12,14 +13,14 @@ type handler struct {
 	service service.Service
 }
 
-func NewHandler(app fiber.Router, s service.Service) {
+func NewHandler(app fiber.Router, m middleware.Middleware, s service.Service) {
 	h := &handler{
 		service: s,
 	}
 
 	group := app.Group("/practices")
 
-	group.Post("/", h.CreatePractice)
+	group.Post("/", m.JWT, h.CreatePractice)
 }
 
 // createPractice godoc
