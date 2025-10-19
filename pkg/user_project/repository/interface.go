@@ -14,7 +14,7 @@ type Repository interface {
 	GetUserProjects(
 		ctx context.Context,
 		userProjects *[]user_project.UserProject,
-		queries map[string]string,
+		condition *GetUserProjectsCondition,
 	) error
 	GetUserProject(
 		ctx context.Context,

@@ -2,7 +2,6 @@ package user_project
 
 import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/basic_model"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project_media"
 )
@@ -12,7 +11,6 @@ type UserProject struct {
 	UserID    uint                                   `json:"userId"`
 	User      *user.User                             `json:"user"`
 	ContentID uint                                   `json:"contentId"`
-	Content   *content.Content                       `json:"content"`
 	Status    UserProjectStatus                      `json:"status"`
 	Url       *string                                `json:"url"`
 	Score     float32                                `json:"score"`
