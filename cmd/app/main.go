@@ -119,8 +119,6 @@ func main() {
 	db.Exec(
 		fmt.Sprintf(
 			"CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s');",
-			// "CREATE TYPE user_practice_status AS ENUM ('%s', '%s', '%s', '%s');",
-			// user_practice.Opened,
 			user_practice.InProgress,
 			user_practice.Submitted,
 			user_practice.Reviewed,
@@ -151,7 +149,6 @@ func main() {
 
 	middleware := middleware.NewMiddleware(db)
 
-	// route := app.Group("/api", middleware.JWT)
 	route := app.Group("/api")
 
 	// Create new repos
@@ -170,28 +167,28 @@ func main() {
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
-	contentSvc := contentService.NewService(contentRepo, userPracticeRepo)
+	contentSvc := contentService.NewService(contentRepo, userPracticeRepo, userTrackRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
 	questionSvc := questionService.NewService(questionRepo)
 	trackSvc := trackService.NewService(trackRepo)
 	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
 	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
-	userProjectSvc := userProjectService.NewService(userProjectRepo)
+	userProjectSvc := userProjectService.NewService(userProjectRepo, contentRepo)
 	userSvc := userService.NewService(userRepo)
 	userTrackSvc := userTrackService.NewService(userTrackRepo)
 
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
 	contentHandler.NewHandler(route, middleware, contentSvc)
-	practiceHandler.NewHandler(route, practiceSvc)
-	projectHandler.NewHandler(route, projectSvc)
+	practiceHandler.NewHandler(route, middleware, practiceSvc)
+	projectHandler.NewHandler(route, middleware, projectSvc)
 	questionHandler.NewHandler(route, middleware, questionSvc)
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
-	userProjectHandler.NewHandler(route, userProjectSvc)
+	userProjectHandler.NewHandler(route, middleware, userProjectSvc)
 	userHandler.NewHandler(route, userSvc)
-	userTrackHandler.NewHandler(route, userTrackSvc)
+	userTrackHandler.NewHandler(route, middleware, userTrackSvc)
 	trackHandler.NewHandler(route, trackSvc)
 
 	seeder.RunSeeders(
