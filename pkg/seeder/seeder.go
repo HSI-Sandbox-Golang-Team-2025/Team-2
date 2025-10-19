@@ -73,6 +73,12 @@ func (s *seeder) runUserSeeder() error {
 			Name:     "Luthfi",
 			Password: "123",
 		},
+		{
+			Nip:      "ARN-2402002",
+			RoleID:   2,
+			Name:     "Teguh",
+			Password: "123",
+		},
 	}
 
 	for _, u := range users {
@@ -313,7 +319,6 @@ func (s *seeder) runEndpointSeeder() error {
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
-				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
@@ -345,7 +350,6 @@ func (s *seeder) runEndpointSeeder() error {
 			Method: "PATCH",
 			ACLs: &[]acl.ACL{
 				{RoleID: lib.UintNil(1)},
-				{RoleID: lib.UintNil(2)},
 			},
 		},
 		{
