@@ -29,9 +29,11 @@ func CreateJWT(userId uint) (string, error) {
 func ParseJwt(authHeader string) (*Claims, error) {
 	var tokenString string
 
-	if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
-		tokenString = authHeader[7:]
+	if len(authHeader) <= 7 || authHeader[:7] != "Bearer " {
+		return nil, errors.New("Invalid or expired token")
 	}
+
+	tokenString = authHeader[7:]
 
 	token, err := jwt.ParseWithClaims(
 		tokenString,
