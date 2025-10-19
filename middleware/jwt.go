@@ -32,13 +32,13 @@ func (m *middleware) JWT(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
 	}
 
-	u := user.User{}
-
 	claims, err := lib.ParseJwt(authHeader)
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
+
+	u := user.User{}
 
 	// Check the user's data in DB
 	err = m.db.WithContext(context.Background()).
