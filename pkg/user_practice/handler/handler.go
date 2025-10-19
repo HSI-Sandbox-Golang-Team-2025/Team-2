@@ -115,7 +115,7 @@ func (h *handler) SubmitUserPractice(c *fiber.Ctx) error {
 // @Tags Backlog
 // @Accept json
 // @Produce json
-// @Router /user-practices/:id/review [patch]
+// @Router /user-practices/{id}/review [patch]
 func (h *handler) ReviewUserPractice(c *fiber.Ctx) error {
 	var body user_practice.UserPractice
 
@@ -123,7 +123,15 @@ func (h *handler) ReviewUserPractice(c *fiber.Ctx) error {
 		return err
 	}
 
-	data, err := h.service.ReviewUserPractice(context.Background(), body, c.Params("id"))
+	user := user.User{}
+	user.ID = c.Locals("userId").(uint)
+
+	data, err := h.service.ReviewUserPractice(
+		context.Background(),
+		body,
+		c.Params("id"),
+		user,
+	)
 
 	if err != nil {
 		return err

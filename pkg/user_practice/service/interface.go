@@ -22,6 +22,7 @@ type Service interface {
 		ctx context.Context,
 		up user_practice.UserPractice,
 		paramId string,
+		user user.User,
 	) (*user_practice.UserPractice, error)
 	GetUserPractices(
 		ctx context.Context,

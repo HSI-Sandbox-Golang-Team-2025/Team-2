@@ -11,7 +11,7 @@ type UserPracticeRecord struct {
 	UserPracticeID         uint                                         `json:"userPracticeId"`
 	QuestionID             uint                                         `json:"questionId"`
 	Question               *question.Question                           `json:"question" swaggertype:"string" extension:"x-nullable"`
-	QuestionAnswerChoiceID uint                                         `json:"questionAnswerChoiceId"`
+	QuestionAnswerChoiceID *uint                                        `json:"questionAnswerChoiceId"`
 	QuestionAnswerChoice   *question_answer_choice.QuestionAnswerChoice `json:"questionAnswerChoice" swaggertype:"string" extension:"x-nullable"`
 	QuestionAnswerText     *string                                      `json:"questionAnswerText"`
 	IsCorrect              *bool                                        `json:"isCorrect"`
