@@ -7,5 +7,8 @@ import (
 )
 
 type Service interface {
-	CreateProject(ctx context.Context, c content.Content) (*content.Content, error)
+	CreateProject(
+		ctx context.Context,
+		body content.Content,
+	) (*content.Content, error)
 }

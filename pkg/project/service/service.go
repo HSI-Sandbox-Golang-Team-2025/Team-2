@@ -20,13 +20,33 @@ func NewService(
 	}
 }
 
-func (s *service) CreateProject(ctx context.Context, body content.Content) (*content.Content, error) {
-	c := body
-	c.Type = content.ContentTypeProject
+func (s *service) CreateProject(
+	ctx context.Context,
+	body content.Content,
+) (*content.Content, error) {
+	generateContentOrderCondition := contentRepository.GetContentNewOrderCondition{}
+	generateContentOrderCondition.TrackId = body.TrackID
 
-	if err := s.contentRepo.CreateContent(ctx, &c); err != nil {
+	order, err := s.contentRepo.GenerateContentOrder(
+		ctx,
+		&generateContentOrderCondition,
+	)
+
+	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return &c, nil
+	content := content.Content{
+		TrackID: body.TrackID,
+		Title:   body.Title,
+		Body:    body.Body,
+		Type:    content.ContentTypeProject,
+		Order:   *order,
+	}
+
+	if err := s.contentRepo.CreateContent(ctx, &content); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &content, nil
 }
