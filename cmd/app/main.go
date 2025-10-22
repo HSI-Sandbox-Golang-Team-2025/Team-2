@@ -17,6 +17,9 @@ import (
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint"
 	endpointRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint/repository"
+	materialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/handler"
+	materialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/repository"
+	materialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/service"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
@@ -155,6 +158,7 @@ func main() {
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
 	endpointRepo := endpointRepository.NewRepository(db)
+	materialRepo := materialRepository.NewRepository(db)
 	questionRepo := questionRepository.NewRepository(db)
 	roleRepo := roleRepository.NewRepository(db)
 	trackRepo := trackRepository.NewRepository(db)
@@ -168,6 +172,7 @@ func main() {
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
 	contentSvc := contentService.NewService(contentRepo, userPracticeRepo, userTrackRepo)
+	materialSvc := materialService.NewService(contentRepo, materialRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
 	questionSvc := questionService.NewService(questionRepo)
@@ -181,6 +186,7 @@ func main() {
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
 	contentHandler.NewHandler(route, middleware, contentSvc)
+	materialHandler.NewHandler(route, middleware, materialSvc)
 	practiceHandler.NewHandler(route, middleware, practiceSvc)
 	projectHandler.NewHandler(route, middleware, projectSvc)
 	questionHandler.NewHandler(route, middleware, questionSvc)
