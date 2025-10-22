@@ -9,7 +9,10 @@ import (
 
 type Service interface {
 	// CreateMaterial(ctx context.Context, m material.Material) (*material.Material, error)
-	CreateMaterial(ctx context.Context, c content.Content) (*content.Content, error)
+	CreateMaterial(
+		ctx context.Context,
+		body content.Content,
+	) (*content.Content, error)
 	GetMaterialByID(ctx context.Context, id int64) (*material.Material, error)
 	GetAllMaterial(ctx context.Context) ([]material.Material, error)
 	UpdateMaterial(ctx context.Context, m material.Material) error

@@ -17,8 +17,8 @@ type service struct {
 }
 
 func NewService(
-	repository repository.Repository,
 	contentRepo contentRepository.Repository,
+	repository repository.Repository,
 ) Service {
 	return &service{
 		repository:  repository,
@@ -26,14 +26,35 @@ func NewService(
 	}
 }
 
-func (s *service) CreateMaterial(ctx context.Context, c content.Content) (*content.Content, error) {
-	c.Type = content.ContentTypeMaterial
+func (s *service) CreateMaterial(
+	ctx context.Context,
+	body content.Content,
+) (*content.Content, error) {
+	generateContentOrderCondition := contentRepository.GetContentNewOrderCondition{}
+	generateContentOrderCondition.TrackId = body.TrackID
 
-	if err := s.contentRepo.CreateContent(ctx, &c); err != nil {
+	order, err := s.contentRepo.GenerateContentOrder(
+		ctx,
+		&generateContentOrderCondition,
+	)
+
+	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return &c, nil
+	content := content.Content{
+		TrackID: body.TrackID,
+		Title:   body.Title,
+		Body:    body.Body,
+		Type:    content.ContentTypeMaterial,
+		Order:   *order,
+	}
+
+	if err := s.contentRepo.CreateContent(ctx, &content); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &content, nil
 }
 
 func (s *service) GetMaterialByID(ctx context.Context, id int64) (*material.Material, error) {

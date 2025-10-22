@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
@@ -107,6 +109,28 @@ func (r *repository) GetContent(
 	*c = contents[0]
 
 	return nil
+}
+
+type GetContentNewOrderCondition struct {
+	TrackId uint
+}
+
+func (r *repository) GenerateContentOrder(
+	ctx context.Context,
+	condition *GetContentNewOrderCondition,
+) (*uint, error) {
+	contents := []content.Content{}
+
+	getContentsCondition := GetContentsCondition{}
+	getContentsCondition.TrackID = condition.TrackId
+
+	err := r.GetContents(ctx, &contents, &getContentsCondition)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return lib.UintNil(uint(len(contents))), nil
 }
 
 func (r *repository) GetContentByID(ctx context.Context, id int64) (*content.Content, error) {

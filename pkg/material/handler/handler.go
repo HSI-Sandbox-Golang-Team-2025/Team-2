@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/middleware"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/service"
@@ -13,12 +14,16 @@ type handler struct {
 	materialService service.Service
 }
 
-func NewHandler(app fiber.Router, s service.Service) {
+func NewHandler(
+	app fiber.Router,
+	m middleware.Middleware,
+	s service.Service,
+) {
 	h := &handler{materialService: s}
 
 	group := app.Group("/materials")
 
-	group.Post("/", h.CreateMaterial)
+	group.Post("/", m.JWT, h.CreateMaterial)
 	group.Get("/:id", h.GetMaterialByID)
 	group.Get("/", h.GetAllMaterial)
 	group.Put("/:id", h.UpdateMaterial)

@@ -10,6 +10,10 @@ type Repository interface {
 	GetContents(ctx context.Context, c *[]content.Content, condition *GetContentsCondition) error
 	GetContent(ctx context.Context, c *content.Content, condition *GetContentCondition) error
 	CreateContent(ctx context.Context, c *content.Content) error
+	GenerateContentOrder(
+		ctx context.Context,
+		condition *GetContentNewOrderCondition,
+	) (*uint, error)
 
 	GetContentByID(ctx context.Context, id int64) (*content.Content, error)
 	UpdateContent(ctx context.Context, c content.Content) error
