@@ -61,12 +61,14 @@ func (r *repository) GetTrack(
 	return nil
 }
 
-func (r *repository) GetTrackByID(ctx context.Context, id int64) (*track.Track, error) {
-	var t track.Track
+func (r *repository) GetTrackByID(ctx context.Context, id uint, t *track.Track) error {
 	if err := r.db.WithContext(ctx).First(&t, id).Error; err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("Track not found!")
+		}
+		return err
 	}
-	return &t, nil
+	return nil
 }
 
 func (r *repository) GetAllTrack(ctx context.Context) ([]track.Track, error) {
@@ -77,10 +79,10 @@ func (r *repository) GetAllTrack(ctx context.Context) ([]track.Track, error) {
 	return trackList, nil
 }
 
-func (r *repository) UpdateTrack(ctx context.Context, t track.Track) error {
-	return r.db.WithContext(ctx).Save(&t).Error
+func (r *repository) UpdateTrack(ctx context.Context, t *track.Track) error {
+	return r.db.WithContext(ctx).Updates(&t).Error
 }
 
-func (r *repository) DeleteTrack(ctx context.Context, id int64) error {
+func (r *repository) DeleteTrack(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&track.Track{}, id).Error
 }

@@ -16,8 +16,8 @@ type Repository interface {
 		t *track.Track,
 		condition *FindTrackCondition,
 	) error
-	GetTrackByID(ctx context.Context, id int64) (*track.Track, error)
+	GetTrackByID(ctx context.Context, id uint, t *track.Track) error
 	GetAllTrack(ctx context.Context) ([]track.Track, error)
-	UpdateTrack(ctx context.Context, t track.Track) error
-	DeleteTrack(ctx context.Context, id int64) error
+	UpdateTrack(ctx context.Context, t *track.Track) error
+	DeleteTrack(ctx context.Context, id uint) error
 }

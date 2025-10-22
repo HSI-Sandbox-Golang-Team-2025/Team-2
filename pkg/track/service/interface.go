@@ -10,6 +10,6 @@ type Service interface {
 	CreateTrack(ctx context.Context, t track.Track) (*track.Track, error)
 	GetTrackByID(ctx context.Context, id int64) (*track.Track, error)
 	GetAllTrack(ctx context.Context) ([]track.Track, error)
-	UpdateTrack(ctx context.Context, t track.Track) error
+	UpdateTrack(ctx context.Context, t track.Track) (*track.Track, error)
 	DeleteTrack(ctx context.Context, id int64) error
 }

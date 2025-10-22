@@ -186,7 +186,7 @@ func SetupApp() *fiber.App {
 	userProjectHandler.NewHandler(route, middleware, userProjectSvc)
 	userHandler.NewHandler(route, userSvc)
 	userTrackHandler.NewHandler(route, middleware, userTrackSvc)
-	trackHandler.NewHandler(route, trackSvc)
+	trackHandler.NewHandler(route, middleware, trackSvc)
 
 	seeder.RunSeeders(
 		userRepo,
