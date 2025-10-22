@@ -7,5 +7,8 @@ import (
 )
 
 type Service interface {
-	CreatePractice(ctx context.Context, c content.Content) (*content.Content, error)
+	CreatePractice(
+		ctx context.Context,
+		body content.Content,
+	) (*content.Content, error)
 }

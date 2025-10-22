@@ -20,12 +20,34 @@ func NewService(
 	}
 }
 
-func (s *service) CreatePractice(ctx context.Context, c content.Content) (*content.Content, error) {
-	c.Type = content.ContentTypePractice
+func (s *service) CreatePractice(
+	ctx context.Context,
+	body content.Content,
+) (*content.Content, error) {
+	generateContentOrderCondition := contentRepository.GetContentNewOrderCondition{}
+	generateContentOrderCondition.TrackId = body.TrackID
 
-	if err := s.contentRepo.CreateContent(ctx, &c); err != nil {
+	order, err := s.contentRepo.GenerateContentOrder(
+		ctx,
+		&generateContentOrderCondition,
+	)
+
+	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return &c, nil
+	content := content.Content{
+		TrackID:   body.TrackID,
+		Title:     body.Title,
+		Body:      body.Body,
+		Type:      content.ContentTypePractice,
+		Order:     *order,
+		Questions: body.Questions,
+	}
+
+	if err := s.contentRepo.CreateContent(ctx, &content); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &content, nil
 }
