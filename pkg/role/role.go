@@ -7,6 +7,6 @@ import (
 
 type Role struct {
 	basic_model.BasicModel
-	Name string     `json:"name"`
+	Name string     `json:"name" example:"mentor"`
 	ACLs *[]acl.ACL `json:"acls"`
 }
