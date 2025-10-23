@@ -3,6 +3,7 @@ package content
 import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/basic_model"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/question"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project"
 )
@@ -16,8 +17,10 @@ type Content struct {
 	Order         uint                          `json:"order" example:"1" extensions:"x-order=08"`
 	Questions     *[]question.Question          `json:"questions" extensions:"x-order=09"`
 	IsCompleted   bool                          `json:"isCompleted" gorm:"<-:false;-:migration" example:"false" extensions:"x-order=10"`
-	UserPractices *[]user_practice.UserPractice `json:"userPractices" extensions:"x-order=11"`
-	UserProjects  *[]user_project.UserProject   `json:"userProjects" etensions:"x-order=12"`
+	UserMaterial  *user_material.UserMaterial   `json:"userMaterial"`
+	UserPractices *[]user_practice.UserPractice `json:"userPractices"`
+	UserProjects  *[]user_project.UserProject   `json:"userProjects"`
+	// UserContent *user_content.UserContent `json:"userContent" extensions:"x-order=13"`
 }
 
 type ContentType string

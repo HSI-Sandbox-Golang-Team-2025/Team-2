@@ -34,14 +34,16 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 		Model(&content.Content{})
 
 	if condition.HideBody {
-		db = db.Distinct("contents.*, 'Hidden' as \"body\", CASE WHEN COALESCE(user_practices.id, user_projects.id) IS NOT null THEN true ELSE false END AS is_completed")
+		db = db.Distinct("contents.*, 'Hidden' as \"body\", CASE WHEN COALESCE(user_materials.id, user_practices.id, user_projects.id) IS NOT null THEN true ELSE false END AS is_completed")
 	} else {
-		db = db.Distinct("contents.*, CASE WHEN COALESCE(user_practices.id, user_projects.id) IS NOT null THEN true ELSE false END AS is_completed")
+		db = db.Distinct("contents.*, CASE WHEN COALESCE(user_materials.id, user_practices.id, user_projects.id) IS NOT null THEN true ELSE false END AS is_completed")
 	}
 
 	db = db.
+		Joins("LEFT JOIN user_materials ON user_materials.content_id = contents.id AND user_materials.status = 'opened' AND user_materials.user_id = ?", condition.UserID).
 		Joins("LEFT JOIN user_practices ON user_practices.content_id = contents.id AND user_practices.status = 'reviewed' AND user_practices.user_id = ?", condition.UserID).
 		Joins("LEFT JOIN user_projects ON user_projects.content_id = contents.id AND user_projects.status = 'approved' AND user_projects.user_id = ?", condition.UserID).
+		Preload("UserMaterial", "user_id = ?", condition.UserID).
 		Preload("UserPractices", "user_id = ?", condition.UserID).
 		Preload("UserProjects", "user_id = ?", condition.UserID)
 
@@ -58,7 +60,7 @@ func (r *repository) GetContents(ctx context.Context, c *[]content.Content, cond
 	}
 
 	if condition.OnlyCompleted {
-		db = db.Where("COALESCE(user_practices.id, user_projects.id) IS NOT NULL")
+		db = db.Where("COALESCE(user_materials.id, user_practices.id, user_projects.id) IS NOT NULL")
 	}
 
 	if condition.OrderBefore != 0 {
@@ -95,9 +97,10 @@ func (r *repository) GetContent(
 	contents := []content.Content{}
 
 	getContentsCondition := GetContentsCondition{
-		ID:    condition.ID,
-		Type:  condition.Type,
-		Limit: 1,
+		ID:     condition.ID,
+		Type:   condition.Type,
+		UserID: condition.UserID,
+		Limit:  1,
 	}
 
 	err := r.GetContents(ctx, &contents, &getContentsCondition)

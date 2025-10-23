@@ -12,7 +12,9 @@ type handler struct {
 
 func NewHandler(app fiber.Router, s service.UserMaterialService) {
 	h := &handler{userMaterialService: s}
+
 	group := app.Group("/user-materials")
+
 	group.Post("/", h.CreateUserMaterial)
 	group.Get("/:id", h.GetUserMaterialByID)
 	group.Get("/", h.GetAllUserMaterial)
@@ -22,12 +24,15 @@ func NewHandler(app fiber.Router, s service.UserMaterialService) {
 
 func (h *handler) CreateUserMaterial(c *fiber.Ctx) error {
 	var req user_material.UserMaterial
+
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
+
 	if err := h.userMaterialService.Create(&req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
+
 	return c.Status(fiber.StatusCreated).JSON(req)
 }
 

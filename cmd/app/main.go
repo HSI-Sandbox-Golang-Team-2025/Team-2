@@ -40,6 +40,7 @@ import (
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
 	userMaterialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/handler"
 	userMaterialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
 	userMaterialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/service"
@@ -142,6 +143,7 @@ func main() {
 		&user_practice_record.UserPracticeRecord{},
 		&user_project.UserProject{},
 		&user_project_media.UserProjectMedia{},
+		&user_material.UserMaterial{},
 	)
 
 	if err != nil {
@@ -171,7 +173,7 @@ func main() {
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
-	contentSvc := contentService.NewService(contentRepo, userPracticeRepo, userTrackRepo)
+	contentSvc := contentService.NewService(contentRepo, userMaterialRepo, userPracticeRepo, userTrackRepo)
 	materialSvc := materialService.NewService(contentRepo, materialRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)

@@ -6,10 +6,10 @@ import (
 )
 
 type userMaterialService struct {
-	repo repository.UserMaterialRepository
+	repo repository.Repository
 }
 
-func NewService(repo repository.UserMaterialRepository) UserMaterialService {
+func NewService(repo repository.Repository) UserMaterialService {
 	return &userMaterialService{repo: repo}
 }
 

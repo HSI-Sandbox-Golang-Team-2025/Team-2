@@ -1,15 +1,21 @@
 package user_material
 
 import (
-	"gorm.io/gorm"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/basic_model"
 )
 
 type UserMaterial struct {
-	gorm.Model
-	UserID    uint   `json:"user_id" gorm:"column:user_id"`
-	ContentID uint   `json:"content_id" gorm:"column:content_id"`
-	Status    string `json:"status" gorm:"column:status"`
+	basic_model.BasicModel
+	UserID    uint               `json:"userId"`
+	ContentID uint               `json:"contentId"`
+	Status    UserMaterialStatus `json:"status"`
 }
+
+type UserMaterialStatus string
+
+const (
+	Opened UserMaterialStatus = "opened"
+)
 
 func (UserMaterial) TableName() string {
 	return "user_materials"
