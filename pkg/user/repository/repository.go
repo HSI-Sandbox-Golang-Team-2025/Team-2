@@ -16,25 +16,10 @@ func NewRepository(db *gorm.DB) Repository {
 	return &repository{db: db}
 }
 
-type FindUserCondition struct {
-	user.User
-}
-
-func (r *repository) GetUser(ctx context.Context, u *user.User, condition *FindUserCondition) error {
-	err := r.db.WithContext(ctx).
-		Where("nip = ?", condition.Nip).
-		First(&u).
-		Error
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (r *repository) CreateUser(ctx context.Context, u *user.User) error {
-	findUserCondition := FindUserCondition{User: *u}
+	findUserCondition := FindUserCondition{
+		Nip: u.Nip,
+	}
 
 	if err := r.GetUser(ctx, u, &findUserCondition); err == nil {
 		return errors.New("NIP is already registered")
@@ -43,6 +28,59 @@ func (r *repository) CreateUser(ctx context.Context, u *user.User) error {
 	if err := r.db.WithContext(ctx).Create(&u).Error; err != nil {
 		return err
 	}
+
+	return nil
+}
+
+type FindUsersCondition struct {
+	Nip string
+}
+
+func (r *repository) GetUsers(
+	ctx context.Context,
+	users *[]user.User,
+	condition *FindUsersCondition,
+) error {
+	db := r.db.WithContext(ctx).
+		Preload("UserTracks").
+		Preload("UserTracks.Track").
+		// Preload("UserTracks.Track.Contents", func(db *gorm.DB) *gorm.DB {
+		// 	return db.Order("contents.order ASC")
+		// }).
+		// Preload("UserTracks.Track.Contents.UserMaterial").
+		// Preload("UserTracks.Track.Contents.UserPractices").
+		// Preload("UserTracks.Track.Contents.UserProjects").
+		Order("id")
+
+	if condition.Nip != "" {
+		db = db.Where("nip = ?", condition.Nip)
+	}
+
+	return db.Find(&users).Error
+}
+
+type FindUserCondition struct {
+	Nip string
+}
+
+func (r *repository) GetUser(
+	ctx context.Context,
+	usr *user.User,
+	condition *FindUserCondition,
+) error {
+	users := []user.User{}
+
+	getUsersCondition := FindUsersCondition{
+		Nip: condition.Nip,
+	}
+
+	err := r.GetUsers(ctx, &users, &getUsersCondition)
+
+	if err != nil {
+		return err
+	}
+
+	*usr = users[0]
 
 	return nil
 }

@@ -392,6 +392,13 @@ func (s *seeder) runEndpointSeeder() error {
 				{RoleID: lib.UintNil(2)},
 			},
 		},
+		{
+			Path:   "/api/users/",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: lib.UintNil(1)},
+			},
+		},
 	}
 
 	for _, e := range endpoints {

@@ -203,7 +203,7 @@ func main() {
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
 	userProjectHandler.NewHandler(route, middleware, userProjectSvc)
-	userHandler.NewHandler(route, userSvc)
+	userHandler.NewHandler(route, middleware, userSvc)
 	userTrackHandler.NewHandler(route, middleware, userTrackSvc)
 	trackHandler.NewHandler(route, middleware, trackSvc)
 
