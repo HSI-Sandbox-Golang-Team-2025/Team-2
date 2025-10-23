@@ -6,6 +6,6 @@ import (
 
 type ACL struct {
 	basic_model.BasicModel
-	RoleID     *uint `json:"roleId"`
-	EndpointID uint  `json:"endpointId"`
+	RoleID     *uint `json:"roleId" example:"1"`
+	EndpointID uint  `json:"endpointId" example:"1"`
 }
