@@ -156,6 +156,31 @@ func (s *service) GetContent(
 		}
 	}
 
+	contents := []content.Content{}
+
+	getContentsCondition := repository.GetContentsCondition{
+		TrackID:  contentRes.TrackID,
+		HideBody: true,
+	}
+
+	if err := s.contentRepo.GetContents(ctx, &contents, &getContentsCondition); err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	// Update UserTrack.Status to "completed"
+	if uint(len(contents)) == contentRes.Order+1 {
+		condition := userTrackRepo.CompleteUserTrackCondition{
+			TrackID: contentRes.TrackID,
+			UserID:  userId,
+		}
+
+		err := s.userTrackRepo.CompleteUserTrack(ctx, &condition)
+
+		if err != nil {
+			return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		}
+	}
+
 	// TODO: Create record to the user_contents
 
 	return &contentRes, nil
