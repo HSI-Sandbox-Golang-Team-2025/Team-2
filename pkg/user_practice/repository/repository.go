@@ -17,9 +17,9 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (r *repository) OpenUserPractice(
 	ctx context.Context,
-	up *user_practice.UserPractice,
+	userPractice *user_practice.UserPractice,
 ) error {
-	if err := r.db.WithContext(ctx).Create(&up).Error; err != nil {
+	if err := r.db.WithContext(ctx).Create(&userPractice).Error; err != nil {
 		return err
 	}
 	return nil
@@ -27,9 +27,9 @@ func (r *repository) OpenUserPractice(
 
 func (r *repository) StartUserPractice(
 	ctx context.Context,
-	up *user_practice.UserPractice,
+	userPractice *user_practice.UserPractice,
 ) error {
-	if err := r.db.WithContext(ctx).Create(&up).Error; err != nil {
+	if err := r.db.WithContext(ctx).Create(&userPractice).Error; err != nil {
 		return err
 	}
 	return nil
@@ -45,7 +45,7 @@ type GetUserPracticeCondition struct {
 
 func (r *repository) GetUserPractice(
 	ctx context.Context,
-	up *user_practice.UserPractice,
+	userPractice *user_practice.UserPractice,
 	condition *GetUserPracticeCondition,
 ) error {
 	db := r.db.
@@ -74,17 +74,25 @@ func (r *repository) GetUserPractice(
 		db = db.Preload("UserPracticeRecords", "id IN ?", condition.UserPracticeRecordIds)
 	}
 
-	if err := db.First(&up).Error; err != nil {
+	if err := db.First(&userPractice).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
+type GetUserPracticesCondition struct {
+	ID                    uint
+	UserID                uint
+	ContentID             uint
+	Status                user_practice.UserPracticeStatus
+	UserPracticeRecordIds []uint
+}
+
 func (r *repository) GetUserPractices(
 	ctx context.Context,
-	up *[]user_practice.UserPractice,
-	condition *GetUserPracticeCondition,
+	userPractices *[]user_practice.UserPractice,
+	condition *GetUserPracticesCondition,
 ) error {
 	db := r.db.
 		WithContext(ctx).
@@ -112,7 +120,7 @@ func (r *repository) GetUserPractices(
 		db = db.Preload("UserPracticeRecords", "id IN ?", condition.UserPracticeRecordIds)
 	}
 
-	if err := db.Find(&up).Error; err != nil {
+	if err := db.Find(&userPractices).Error; err != nil {
 		return err
 	}
 
@@ -121,9 +129,9 @@ func (r *repository) GetUserPractices(
 
 func (r *repository) UpdateUserPractice(
 	ctx context.Context,
-	up *user_practice.UserPractice,
+	userPractice *user_practice.UserPractice,
 ) error {
-	if err := r.db.WithContext(ctx).Updates(&up).Error; err != nil {
+	if err := r.db.WithContext(ctx).Updates(&userPractice).Error; err != nil {
 		return err
 	}
 	return nil

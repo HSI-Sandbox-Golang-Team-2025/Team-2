@@ -35,7 +35,7 @@ func (s *service) GetUserPractices(
 ) (*[]user_practice.UserPractice, error) {
 	userPractices := []user_practice.UserPractice{}
 
-	condition := repository.GetUserPracticeCondition{}
+	condition := repository.GetUserPracticesCondition{}
 
 	contentId, _ := strconv.Atoi(queries["contentId"])
 
