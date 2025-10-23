@@ -15,6 +15,9 @@ import (
 	contentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/handler"
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
+	materialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/handler"
+	materialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/repository"
+	materialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/service"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
@@ -39,6 +42,7 @@ import (
 	userProjectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/handler"
 	userProjectRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/repository"
 	userProjectService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
 	userTrackHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/handler"
 	userTrackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 	userTrackService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/service"
@@ -124,6 +128,14 @@ func handler() http.HandlerFunc {
 		),
 	)
 
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE user_track_status AS ENUM ('%s', '%s');",
+			user_track.InProgress,
+			user_track.Completed,
+		),
+	)
+
 	// err = db.AutoMigrate(
 	// 	&endpoint.Endpoint{},
 	// 	&role.Role{},
@@ -138,6 +150,7 @@ func handler() http.HandlerFunc {
 	// 	&user_practice_record.UserPracticeRecord{},
 	// 	&user_project.UserProject{},
 	// 	&user_project_media.UserProjectMedia{},
+	// 	&user_material.UserMaterial{},
 	// )
 
 	// if err != nil {
@@ -154,6 +167,7 @@ func handler() http.HandlerFunc {
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
 	// endpointRepo := endpointRepository.NewRepository(db)
+	materialRepo := materialRepository.NewRepository(db)
 	questionRepo := questionRepository.NewRepository(db)
 	// roleRepo := roleRepository.NewRepository(db)
 	trackRepo := trackRepository.NewRepository(db)
@@ -166,7 +180,8 @@ func handler() http.HandlerFunc {
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
-	contentSvc := contentService.NewService(contentRepo, userPracticeRepo, userTrackRepo)
+	contentSvc := contentService.NewService(contentRepo, userMaterialRepo, userPracticeRepo, userTrackRepo)
+	materialSvc := materialService.NewService(contentRepo, materialRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
 	questionSvc := questionService.NewService(questionRepo)
@@ -180,13 +195,14 @@ func handler() http.HandlerFunc {
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
 	contentHandler.NewHandler(route, middleware, contentSvc)
+	materialHandler.NewHandler(route, middleware, materialSvc)
 	practiceHandler.NewHandler(route, middleware, practiceSvc)
 	projectHandler.NewHandler(route, middleware, projectSvc)
 	questionHandler.NewHandler(route, middleware, questionSvc)
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
 	userProjectHandler.NewHandler(route, middleware, userProjectSvc)
-	userHandler.NewHandler(route, userSvc)
+	userHandler.NewHandler(route, middleware, userSvc)
 	userTrackHandler.NewHandler(route, middleware, userTrackSvc)
 	trackHandler.NewHandler(route, middleware, trackSvc)
 
