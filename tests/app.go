@@ -16,6 +16,9 @@ import (
 	contentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint"
 	endpointRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/endpoint/repository"
+	materialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/handler"
+	materialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/repository"
+	materialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/material/service"
 	practiceHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/handler"
 	practiceService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/practice/service"
 	projectHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/project/handler"
@@ -36,6 +39,7 @@ import (
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
 	userMaterialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/handler"
 	userMaterialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
 	userMaterialService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/service"
@@ -122,6 +126,14 @@ func SetupApp() *fiber.App {
 		),
 	)
 
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE user_track_status AS ENUM ('%s', '%s');",
+			user_track.InProgress,
+			user_track.Completed,
+		),
+	)
+
 	err = db.AutoMigrate(
 		&endpoint.Endpoint{},
 		&role.Role{},
@@ -136,6 +148,7 @@ func SetupApp() *fiber.App {
 		&user_practice_record.UserPracticeRecord{},
 		&user_project.UserProject{},
 		&user_project_media.UserProjectMedia{},
+		&user_material.UserMaterial{},
 	)
 
 	if err != nil {
@@ -152,6 +165,7 @@ func SetupApp() *fiber.App {
 	authRepo := authRepository.NewRepository(db)
 	contentRepo := contentRepository.NewRepository(db)
 	endpointRepo := endpointRepository.NewRepository(db)
+	materialRepo := materialRepository.NewRepository(db)
 	questionRepo := questionRepository.NewRepository(db)
 	roleRepo := roleRepository.NewRepository(db)
 	trackRepo := trackRepository.NewRepository(db)
@@ -164,7 +178,8 @@ func SetupApp() *fiber.App {
 
 	// Create new services
 	authSvc := authService.NewService(authRepo, userRepo)
-	contentSvc := contentService.NewService(contentRepo, userPracticeRepo, userTrackRepo)
+	contentSvc := contentService.NewService(contentRepo, userMaterialRepo, userPracticeRepo, userTrackRepo)
+	materialSvc := materialService.NewService(contentRepo, materialRepo)
 	practiceSvc := practiceService.NewService(contentRepo)
 	projectSvc := projectService.NewService(contentRepo)
 	questionSvc := questionService.NewService(questionRepo)
@@ -178,13 +193,14 @@ func SetupApp() *fiber.App {
 	// Create new handlers
 	authHandler.NewHandler(route, authSvc)
 	contentHandler.NewHandler(route, middleware, contentSvc)
+	materialHandler.NewHandler(route, middleware, materialSvc)
 	practiceHandler.NewHandler(route, middleware, practiceSvc)
 	projectHandler.NewHandler(route, middleware, projectSvc)
 	questionHandler.NewHandler(route, middleware, questionSvc)
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
 	userProjectHandler.NewHandler(route, middleware, userProjectSvc)
-	userHandler.NewHandler(route, userSvc)
+	userHandler.NewHandler(route, middleware, userSvc)
 	userTrackHandler.NewHandler(route, middleware, userTrackSvc)
 	trackHandler.NewHandler(route, middleware, trackSvc)
 
