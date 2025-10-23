@@ -8,19 +8,32 @@ import (
 
 // Interface untuk repository UserTrack
 type Repository interface {
-	Create(ctx context.Context, userTrack *user_track.UserTrack) error
-	GetByID(id uint) (*user_track.UserTrack, error)
-	Update(userTrack *user_track.UserTrack) error
-	Delete(id uint) error
-	List() ([]user_track.UserTrack, error)
+	Create(
+		ctx context.Context,
+		userTrack *user_track.UserTrack,
+	) error
 	GetUserTracks(
 		ctx context.Context,
 		userTrack *[]user_track.UserTrack,
 		condition *GetUserTracksCondition,
+	) error
+	GetUserTrack(
+		ctx context.Context,
+		userTrack *user_track.UserTrack,
+		condition *GetUserTrackCondition,
 	) error
 	ValidateUserTrack(
 		ctx context.Context,
 		isValid *bool,
 		condition *ValidateUserTrackCondition,
 	) error
+	CompleteUserTrack(
+		ctx context.Context,
+		condition *CompleteUserTrackCondition,
+	) error
+
+	GetByID(id uint) (*user_track.UserTrack, error)
+	Update(userTrack *user_track.UserTrack) error
+	Delete(id uint) error
+	List() ([]user_track.UserTrack, error)
 }

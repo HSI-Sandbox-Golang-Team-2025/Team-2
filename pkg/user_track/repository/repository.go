@@ -41,38 +41,17 @@ func (r *repository) Create(
 		return errors.New("You can't register for the same track twice!")
 	}
 
+	userTrack.Status = user_track.InProgress
+
 	return r.db.WithContext(ctx).
 		Create(userTrack).
 		Error
 }
 
-func (r *repository) GetByID(id uint) (*user_track.UserTrack, error) {
-	var ut user_track.UserTrack
-	if err := r.db.First(&ut, id).Error; err != nil {
-		return nil, err
-	}
-	return &ut, nil
-}
-
-func (r *repository) Update(userTrack *user_track.UserTrack) error {
-	return r.db.Save(userTrack).Error
-}
-
-func (r *repository) Delete(id uint) error {
-	return r.db.Delete(&user_track.UserTrack{}, id).Error
-}
-
-func (r *repository) List() ([]user_track.UserTrack, error) {
-	var uts []user_track.UserTrack
-	if err := r.db.Find(&uts).Error; err != nil {
-		return nil, err
-	}
-	return uts, nil
-}
-
 type GetUserTracksCondition struct {
 	TrackID uint
 	UserID  uint
+	Status  user_track.UserTrackStatus
 	Limit   uint
 }
 
@@ -91,6 +70,10 @@ func (r *repository) GetUserTracks(
 		db = db.Where("user_id = ?", condition.UserID)
 	}
 
+	if condition.Status != "" {
+		db = db.Where("status = ?", condition.Status)
+	}
+
 	if condition.Limit != 0 {
 		db = db.Limit(int(condition.Limit))
 	}
@@ -98,6 +81,37 @@ func (r *repository) GetUserTracks(
 	return db.
 		Find(&userTrack).
 		Error
+}
+
+type GetUserTrackCondition struct {
+	TrackID uint
+	UserID  uint
+	Status  user_track.UserTrackStatus
+}
+
+func (r *repository) GetUserTrack(
+	ctx context.Context,
+	userTrack *user_track.UserTrack,
+	condition *GetUserTrackCondition,
+) error {
+	userTracks := []user_track.UserTrack{}
+
+	getUserTracksCondition := GetUserTracksCondition{
+		TrackID: condition.TrackID,
+		UserID:  condition.UserID,
+		Status:  condition.Status,
+		Limit:   1,
+	}
+
+	err := r.GetUserTracks(ctx, &userTracks, &getUserTracksCondition)
+
+	if err != nil || len(userTracks) < 1 {
+		return errors.New("User track not found!")
+	}
+
+	*userTrack = userTracks[0]
+
+	return nil
 }
 
 type ValidateUserTrackCondition struct {
@@ -131,4 +145,65 @@ func (r *repository) ValidateUserTrack(
 	*isValid = len(userTracks) > 0
 
 	return nil
+}
+
+type CompleteUserTrackCondition struct {
+	TrackID uint
+	UserID  uint
+}
+
+func (r *repository) CompleteUserTrack(
+	ctx context.Context,
+	condition *CompleteUserTrackCondition,
+) error {
+	userTrack := user_track.UserTrack{}
+
+	getUserTrackCondition := GetUserTrackCondition{
+		UserID:  condition.UserID,
+		TrackID: condition.TrackID,
+		Status:  user_track.InProgress,
+	}
+
+	err := r.GetUserTrack(
+		ctx,
+		&userTrack,
+		&getUserTrackCondition,
+	)
+
+	if err != nil {
+		if err.Error() == "User track not found!" {
+			return nil
+		}
+		return err
+	}
+
+	userTrack.Status = user_track.Completed
+
+	return r.db.WithContext(ctx).
+		Updates(&userTrack).
+		Error
+}
+
+func (r *repository) GetByID(id uint) (*user_track.UserTrack, error) {
+	var ut user_track.UserTrack
+	if err := r.db.First(&ut, id).Error; err != nil {
+		return nil, err
+	}
+	return &ut, nil
+}
+
+func (r *repository) Update(userTrack *user_track.UserTrack) error {
+	return r.db.Save(userTrack).Error
+}
+
+func (r *repository) Delete(id uint) error {
+	return r.db.Delete(&user_track.UserTrack{}, id).Error
+}
+
+func (r *repository) List() ([]user_track.UserTrack, error) {
+	var uts []user_track.UserTrack
+	if err := r.db.Find(&uts).Error; err != nil {
+		return nil, err
+	}
+	return uts, nil
 }

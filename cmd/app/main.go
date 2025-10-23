@@ -129,6 +129,14 @@ func main() {
 		),
 	)
 
+	db.Exec(
+		fmt.Sprintf(
+			"CREATE TYPE user_track_status AS ENUM ('%s', '%s');",
+			user_track.InProgress,
+			user_track.Completed,
+		),
+	)
+
 	err = db.AutoMigrate(
 		&endpoint.Endpoint{},
 		&role.Role{},
