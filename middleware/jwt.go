@@ -64,6 +64,7 @@ func (m *middleware) JWT(c *fiber.Ctx) error {
 	}
 
 	c.Locals("userId", u.ID)
+	c.Locals("roleId", u.RoleID)
 
 	return c.Next()
 }
