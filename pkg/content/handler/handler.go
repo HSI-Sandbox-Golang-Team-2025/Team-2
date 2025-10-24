@@ -62,10 +62,12 @@ func (h *handler) CreateContent(c *fiber.Ctx) error {
 // @Success 200 {object} GetContentsSuccessResponse "Get contents success!"
 // @Router /contents [get]
 func (h *handler) GetContents(c *fiber.Ctx) error {
-	user := user.User{}
-	user.ID = c.Locals("userId").(uint)
+	userAuth := user.User{}
 
-	data, err := h.service.GetContents(context.Background(), c.Queries(), user)
+	userAuth.ID = c.Locals("userId").(uint)
+	userAuth.RoleID = c.Locals("roleId").(uint)
+
+	data, err := h.service.GetContents(context.Background(), c.Queries(), &userAuth)
 
 	if err != nil {
 		return err
@@ -87,10 +89,10 @@ func (h *handler) GetContents(c *fiber.Ctx) error {
 // @Success 200 {object} GetContentSuccessResponse "Get content success!
 // @Router /contents/{id} [get]
 func (h *handler) GetContent(c *fiber.Ctx) error {
-	user := user.User{}
-	user.ID = c.Locals("userId").(uint)
+	userAuth := user.User{}
+	userAuth.ID = c.Locals("userId").(uint)
 
-	data, err := h.service.GetContent(context.Background(), c.Params("id"), user)
+	data, err := h.service.GetContent(context.Background(), c.Params("id"), &userAuth)
 
 	if err != nil {
 		return err

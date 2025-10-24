@@ -8,8 +8,16 @@ import (
 )
 
 type Service interface {
-	GetContents(ctx context.Context, queries map[string]string, user user.User) (*[]content.Content, error)
-	GetContent(ctx context.Context, paramId string, user user.User) (*content.Content, error)
+	GetContents(
+		ctx context.Context,
+		queries map[string]string,
+		userAuth *user.User,
+	) (*[]content.Content, error)
+	GetContent(
+		ctx context.Context,
+		paramId string,
+		userAuth *user.User,
+	) (*content.Content, error)
 
 	CreateContent(ctx context.Context, c content.Content) (*content.Content, error)
 	UpdateContent(ctx context.Context, c content.Content) error
