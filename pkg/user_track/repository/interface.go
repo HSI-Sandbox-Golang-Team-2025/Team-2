@@ -27,6 +27,11 @@ type Repository interface {
 		isValid *bool,
 		condition *ValidateUserTrackCondition,
 	) error
+	CalculateUserTrackAverageScore(
+		ctx context.Context,
+		userTrack *user_track.UserTrack,
+		condition *CalculateUserTrackAverageScore,
+	) error
 	CompleteUserTrack(
 		ctx context.Context,
 		condition *CompleteUserTrackCondition,
