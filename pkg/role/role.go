@@ -10,3 +10,10 @@ type Role struct {
 	Name string     `json:"name" example:"mentor"`
 	ACLs *[]acl.ACL `json:"acls"`
 }
+
+type RoleId uint
+
+const (
+	Mentor RoleId = 1
+	Santri RoleId = 2
+)
