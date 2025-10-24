@@ -9,12 +9,13 @@ type UserProject struct {
 	basic_model.BasicModel
 	UserID uint `json:"userId"`
 	// User      *user.User                             `json:"user"`
-	ContentID uint                                   `json:"contentId"`
-	Status    UserProjectStatus                      `json:"status"`
-	Url       *string                                `json:"url"`
-	Score     float32                                `json:"score"`
-	Comment   *string                                `json:"comment"`
-	Medias    *[]user_project_media.UserProjectMedia `json:"medias"`
+	ContentID   uint                                   `json:"contentId"`
+	UserTrackID uint                                   `json:"userTrackId" example:"1"`
+	Status      UserProjectStatus                      `json:"status"`
+	Url         *string                                `json:"url"`
+	Score       float32                                `json:"score"`
+	Comment     *string                                `json:"comment"`
+	Medias      *[]user_project_media.UserProjectMedia `json:"medias"`
 }
 
 type UserProjectStatus string

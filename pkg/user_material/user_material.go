@@ -6,9 +6,10 @@ import (
 
 type UserMaterial struct {
 	basic_model.BasicModel
-	UserID    uint               `json:"userId"`
-	ContentID uint               `json:"contentId"`
-	Status    UserMaterialStatus `json:"status"`
+	UserID      uint               `json:"userId" example:"1"`
+	ContentID   uint               `json:"contentId" example:"1"`
+	UserTrackID uint               `json:"userTrackId" example:"1"`
+	Status      UserMaterialStatus `json:"status" example:"opened"`
 }
 
 type UserMaterialStatus string
