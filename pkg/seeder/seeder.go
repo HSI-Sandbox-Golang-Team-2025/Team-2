@@ -399,6 +399,13 @@ func (s *seeder) runEndpointSeeder() error {
 				{RoleID: lib.UintNil(uint(role.Mentor))},
 			},
 		},
+		{
+			Path:   "/api/users/:userId/contents/",
+			Method: "GET",
+			ACLs: &[]acl.ACL{
+				{RoleID: lib.UintNil(uint(role.Mentor))},
+			},
+		},
 	}
 
 	for _, e := range endpoints {
