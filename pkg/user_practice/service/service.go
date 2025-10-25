@@ -5,26 +5,32 @@ import (
 	"slices"
 	"strconv"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record"
 	userPracticeRecordRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice_record/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
+	userTrackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
 	userPracticeRepo       repository.Repository
 	userPracticeRecordRepo userPracticeRecordRepository.Repository
+	userTrackRepo          userTrackRepository.Repository
 }
 
 func NewService(
 	userPracticeRepo repository.Repository,
 	userPracticeRecordRepo userPracticeRecordRepository.Repository,
+	userTrackRepo userTrackRepository.Repository,
 ) Service {
 	return &service{
 		userPracticeRepo:       userPracticeRepo,
 		userPracticeRecordRepo: userPracticeRecordRepo,
+		userTrackRepo:          userTrackRepo,
 	}
 }
 
@@ -33,14 +39,22 @@ func (s *service) GetUserPractices(
 	queries map[string]string,
 	user *user.User,
 ) (*[]user_practice.UserPractice, error) {
-	userPractices := []user_practice.UserPractice{}
-
-	condition := repository.GetUserPracticesCondition{}
+	reqUserId := user.ID
+	reqRoleId := user.RoleID
 
 	contentId, _ := strconv.Atoi(queries["contentId"])
+	userId, _ := strconv.Atoi(queries["userId"])
 
-	condition.UserID = user.ID
-	condition.ContentID = uint(contentId)
+	if reqRoleId != uint(role.Mentor) && reqUserId != uint(userId) {
+		return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	}
+
+	userPractices := []user_practice.UserPractice{}
+
+	condition := repository.GetUserPracticesCondition{
+		UserID:    uint(userId),
+		ContentID: uint(contentId),
+	}
 
 	err := s.userPracticeRepo.GetUserPractices(ctx, &userPractices, &condition)
 
@@ -162,6 +176,20 @@ func (s *service) ReviewUserPractice(
 	err = s.userPracticeRecordRepo.UpdateUserPracticeRecords(
 		ctx,
 		userPractice.UserPracticeRecords,
+	)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	calculateUserTrackAverageScoreCondition := userTrackRepository.CalculateUserTrackAverageScore{
+		ID: userPractice.UserTrackID,
+	}
+
+	err = s.userTrackRepo.CalculateUserTrackAverageScore(
+		ctx,
+		&user_track.UserTrack{},
+		&calculateUserTrackAverageScoreCondition,
 	)
 
 	if err != nil {

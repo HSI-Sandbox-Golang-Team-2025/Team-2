@@ -41,6 +41,7 @@ func NewHandler(
 func (h *handler) GetUserPractices(c *fiber.Ctx) error {
 	user := user.User{}
 	user.ID = c.Locals("userId").(uint)
+	user.RoleID = c.Locals("roleId").(uint)
 
 	data, err := h.service.GetUserPractices(context.Background(), c.Queries(), &user)
 
