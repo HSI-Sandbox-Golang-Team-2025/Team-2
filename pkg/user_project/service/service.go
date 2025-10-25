@@ -9,21 +9,26 @@ import (
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
+	userTrackRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
 type service struct {
 	userProjecteRepo repository.Repository
 	contentRepo      contentRepository.Repository
+	userTrackRepo    userTrackRepository.Repository
 }
 
 func NewService(
 	userProjecteRepo repository.Repository,
 	contentRepo contentRepository.Repository,
+	userTrackRepo userTrackRepository.Repository,
 ) Service {
 	return &service{
 		userProjecteRepo: userProjecteRepo,
 		contentRepo:      contentRepo,
+		userTrackRepo:    userTrackRepo,
 	}
 }
 
@@ -173,6 +178,20 @@ func (s *service) ReviewUserProject(
 	userProject.Comment = body.Comment
 
 	err = s.userProjecteRepo.UpdateUserProject(ctx, &userProject)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	calculateUserTrackAverageScoreCondition := userTrackRepository.CalculateUserTrackAverageScore{
+		ID: userProject.UserTrackID,
+	}
+
+	err = s.userTrackRepo.CalculateUserTrackAverageScore(
+		ctx,
+		&user_track.UserTrack{},
+		&calculateUserTrackAverageScoreCondition,
+	)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
