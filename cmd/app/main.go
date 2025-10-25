@@ -40,6 +40,8 @@ import (
 	userHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/handler"
 	userRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	userService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/service"
+	userContentHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_content/handler"
+	userContentService "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_content/service"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
 	userMaterialHandler "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/handler"
 	userMaterialRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
@@ -187,9 +189,10 @@ func main() {
 	projectSvc := projectService.NewService(contentRepo)
 	questionSvc := questionService.NewService(questionRepo)
 	trackSvc := trackService.NewService(trackRepo)
+	userContentSvc := userContentService.NewService(contentRepo, userTrackRepo)
 	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
-	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo)
-	userProjectSvc := userProjectService.NewService(userProjectRepo, contentRepo)
+	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo, userTrackRepo)
+	userProjectSvc := userProjectService.NewService(userProjectRepo, contentRepo, userTrackRepo)
 	userSvc := userService.NewService(userRepo)
 	userTrackSvc := userTrackService.NewService(userTrackRepo)
 
@@ -200,6 +203,7 @@ func main() {
 	practiceHandler.NewHandler(route, middleware, practiceSvc)
 	projectHandler.NewHandler(route, middleware, projectSvc)
 	questionHandler.NewHandler(route, middleware, questionSvc)
+	userContentHandler.NewHandler(route, middleware, userContentSvc)
 	userMaterialHandler.NewHandler(route, userMaterialSvc)
 	userPracticeHandler.NewHandler(route, middleware, userPracticeSvc)
 	userProjectHandler.NewHandler(route, middleware, userProjectSvc)
