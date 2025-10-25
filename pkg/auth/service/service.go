@@ -5,6 +5,7 @@ import (
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/lib"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/auth/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	uRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user/repository"
 	"github.com/gofiber/fiber/v2"
@@ -62,7 +63,7 @@ func (s *service) Register(ctx context.Context, body user.User) (*string, error)
 
 	u.Nip = body.Nip
 	u.Name = body.Name
-	u.RoleID = 3 // Santri
+	u.RoleID = uint(role.Santri)
 
 	hashedPassword, err := lib.HashPassword(body.Password)
 
