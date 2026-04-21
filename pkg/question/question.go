@@ -7,7 +7,7 @@ import (
 
 type Question struct {
 	basic_model.BasicModel
-	ContentID     uint                                           `json:"contentId" gorm:"unique" example:"1" extensions:"x-order=04"`
+	ContentID     uint                                           `json:"contentId" example:"1" extensions:"x-order=04"`
 	Question      string                                         `json:"question" example:"Apakah 1 + 1 = 2" extensions:"x-order=05"`
 	AnswerChoices *[]question_answer_choice.QuestionAnswerChoice `json:"answerChoices" extensions:"x-order=05"`
 }

@@ -16,7 +16,7 @@ type UserTrack struct {
 	Track         *track.Track                  `json:"track"`
 	Status        UserTrackStatus               `json:"status"`
 	AverageScore  float32                       `json:"averageScore"`
-	UserMaterial  *user_material.UserMaterial   `json:"userMaterial"`
+	UserMaterials *[]user_material.UserMaterial `json:"userMaterials"`
 	UserPractices *[]user_practice.UserPractice `json:"userPractice"`
 	UserProjects  *[]user_project.UserProject   `json:"userProjects"`
 }

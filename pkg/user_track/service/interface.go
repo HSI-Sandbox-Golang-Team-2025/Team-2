@@ -13,6 +13,11 @@ type UserTrackService interface {
 		body *user_track.UserTrack,
 		user *user.User,
 	) (*user_track.UserTrack, error)
+	GetUserTracks(
+		ctx context.Context,
+		queries map[string]string,
+		user *user.User,
+	) (*[]user_track.UserTrack, error)
 	GetByID(id uint) (*user_track.UserTrack, error)
 	Update(userTrack *user_track.UserTrack) error
 	Delete(id uint) error

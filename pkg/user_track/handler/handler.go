@@ -26,8 +26,8 @@ func NewHandler(
 	group := app.Group("/user-tracks")
 
 	group.Post("/", m.JWT, h.CreateUserTrack)
+	group.Get("/", m.JWT, h.GetUserTracks)
 	group.Get("/:id", m.JWT, h.GetUserTrackByID)
-	group.Get("/", m.JWT, h.GetAllUserTrack)
 	group.Put("/:id", m.JWT, h.UpdateUserTrack)
 	group.Delete("/:id", m.JWT, h.DeleteUserTrack)
 }
@@ -50,6 +50,23 @@ func (h *handler) CreateUserTrack(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "Create practice content success!",
+		"data":    data,
+	})
+}
+
+func (h *handler) GetUserTracks(c *fiber.Ctx) error {
+	user := user.User{}
+	user.ID = c.Locals("userId").(uint)
+	user.RoleID = c.Locals("roleId").(uint)
+
+	data, err := h.userTrackService.GetUserTracks(context.Background(), c.Queries(), &user)
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Get user tracks success!",
 		"data":    data,
 	})
 }

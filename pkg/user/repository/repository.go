@@ -33,7 +33,8 @@ func (r *repository) CreateUser(ctx context.Context, u *user.User) error {
 }
 
 type FindUsersCondition struct {
-	Nip string
+	Nip      string
+	RoleName string
 }
 
 func (r *repository) GetUsers(
@@ -42,6 +43,7 @@ func (r *repository) GetUsers(
 	condition *FindUsersCondition,
 ) error {
 	db := r.db.WithContext(ctx).
+		Joins("JOIN roles ON roles.id = users.role_id").
 		Preload("UserTracks").
 		Preload("UserTracks.Track").
 		// Preload("UserTracks.Track.Contents", func(db *gorm.DB) *gorm.DB {
@@ -54,6 +56,10 @@ func (r *repository) GetUsers(
 
 	if condition.Nip != "" {
 		db = db.Where("nip = ?", condition.Nip)
+	}
+
+	if condition.RoleName != "" {
+		db = db.Where("roles.name = ?", condition.RoleName)
 	}
 
 	return db.Find(&users).Error
@@ -76,8 +82,8 @@ func (r *repository) GetUser(
 
 	err := r.GetUsers(ctx, &users, &getUsersCondition)
 
-	if err != nil {
-		return err
+	if err != nil || len(users) < 1 {
+		return errors.New("User track not found!")
 	}
 
 	*usr = users[0]

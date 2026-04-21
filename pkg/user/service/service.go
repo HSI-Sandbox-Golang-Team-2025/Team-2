@@ -27,7 +27,11 @@ func (s *service) GetUsers(
 ) (*[]user.User, error) {
 	users := []user.User{}
 
-	getUsersCondtion := repository.FindUsersCondition{}
+	roleName := queries["roleName"]
+
+	getUsersCondtion := repository.FindUsersCondition{
+		RoleName: roleName,
+	}
 
 	err := s.userRepo.GetUsers(ctx, &users, &getUsersCondtion)
 

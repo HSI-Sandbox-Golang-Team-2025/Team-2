@@ -6,6 +6,7 @@ import (
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_project/repository"
@@ -39,6 +40,7 @@ func (s *service) StartUserProject(
 ) (*user_project.UserProject, error) {
 	c := content.Content{}
 
+	userId := user.ID
 	contentId := body.ContentID
 
 	getContentCondition := contentRepository.GetContentCondition{
@@ -47,6 +49,19 @@ func (s *service) StartUserProject(
 	}
 
 	err := s.contentRepo.GetContent(ctx, &c, &getContentCondition)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	userTrack := user_track.UserTrack{}
+
+	condition := userTrackRepository.GetUserTrackCondition{
+		TrackID: c.TrackID,
+		UserID:  userId,
+	}
+
+	err = s.userTrackRepo.GetUserTrack(ctx, &userTrack, &condition)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
@@ -70,9 +85,10 @@ func (s *service) StartUserProject(
 	}
 
 	userProject = user_project.UserProject{
-		UserID:    user.ID,
-		ContentID: body.ContentID,
-		Status:    user_project.InProgress,
+		UserID:      userId,
+		ContentID:   body.ContentID,
+		UserTrackID: userTrack.ID,
+		Status:      user_project.InProgress,
 	}
 
 	err = s.userProjecteRepo.StartUserProject(ctx, &userProject)
@@ -89,13 +105,31 @@ func (s *service) GetUserProjects(
 	queries map[string]string,
 	user user.User,
 ) (*[]user_project.UserProject, error) {
-	userProjects := []user_project.UserProject{}
+	reqUserId := user.ID
+	reqRoleId := user.RoleID
+
+	// if reqRoleId != uint(role.Mentor) && reqUserId != uint(userId) {
+	// 	return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	// }
+
+	if reqRoleId != uint(role.Mentor) && queries["userId"] != "" {
+		return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	}
 
 	contentId, _ := strconv.Atoi(queries["contentId"])
+	userId, _ := strconv.Atoi(queries["userId"])
+	status := queries["status"]
+
+	if reqRoleId != uint(role.Mentor) {
+		userId = int(reqUserId)
+	}
+
+	userProjects := []user_project.UserProject{}
 
 	condition := repository.GetUserProjectsCondition{
-		UserID:    user.ID,
+		UserID:    uint(userId),
 		ContentID: uint(contentId),
+		Status:    user_project.UserProjectStatus(status),
 	}
 
 	err := s.userProjecteRepo.GetUserProjects(
@@ -183,6 +217,7 @@ func (s *service) ReviewUserProject(
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
+	// Update the average score with the new score
 	calculateUserTrackAverageScoreCondition := userTrackRepository.CalculateUserTrackAverageScore{
 		ID: userProject.UserTrackID,
 	}
@@ -192,6 +227,17 @@ func (s *service) ReviewUserProject(
 		&user_track.UserTrack{},
 		&calculateUserTrackAverageScoreCondition,
 	)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	// Update UserTrack.Status to "completed"
+	completeUserTrackCondition := userTrackRepository.CompleteUserTrackCondition{
+		ID: userProject.UserTrackID,
+	}
+
+	err = s.userTrackRepo.CompleteUserTrack(ctx, &completeUserTrackCondition)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())

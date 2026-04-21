@@ -188,7 +188,7 @@ func SetupApp() *fiber.App {
 	trackSvc := trackService.NewService(trackRepo)
 	userContentSvc := userContentService.NewService(contentRepo, userTrackRepo)
 	userMaterialSvc := userMaterialService.NewService(userMaterialRepo)
-	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo, userTrackRepo)
+	userPracticeSvc := userPracticeService.NewService(userPracticeRepo, userPracticeRecordRepo, userTrackRepo, contentRepo)
 	userProjectSvc := userProjectService.NewService(userProjectRepo, contentRepo, userTrackRepo)
 	userSvc := userService.NewService(userRepo)
 	userTrackSvc := userTrackService.NewService(userTrackRepo)

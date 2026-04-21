@@ -43,11 +43,12 @@ func (s *service) CreateMaterial(
 	}
 
 	content := content.Content{
-		TrackID: body.TrackID,
-		Title:   body.Title,
-		Body:    body.Body,
-		Type:    content.ContentTypeMaterial,
-		Order:   *order,
+		TrackID:  body.TrackID,
+		Title:    body.Title,
+		Body:     body.Body,
+		VideoURL: body.VideoURL,
+		Type:     content.ContentTypeMaterial,
+		Order:    *order,
 	}
 
 	if err := s.contentRepo.CreateContent(ctx, &content); err != nil {

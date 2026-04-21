@@ -61,7 +61,10 @@ func (r *repository) GetUserTracks(
 	userTrack *[]user_track.UserTrack,
 	condition *GetUserTracksCondition,
 ) error {
-	db := r.db.WithContext(ctx)
+	db := r.db.WithContext(ctx).
+		Preload("UserMaterials").
+		Preload("UserPractices").
+		Preload("UserProjects")
 
 	if condition.TrackID != 0 {
 		db = db.Where("track_id = ?", condition.TrackID)
@@ -149,6 +152,7 @@ func (r *repository) ValidateUserTrack(
 }
 
 type CompleteUserTrackCondition struct {
+	ID      uint
 	TrackID uint
 	UserID  uint
 }
@@ -199,7 +203,7 @@ func (r *repository) CalculateUserTrackAverageScore(
 	err := r.db.WithContext(ctx).
 		Select(`user_tracks.*, COALESCE(AVG(contents.score), 0) AS "average_score"`).
 		Joins(
-			"LEFT JOIN (?) contents on contents.track_id = user_tracks.id",
+			"LEFT JOIN (?) contents on contents.track_id = user_tracks.track_id",
 			r.db.WithContext(ctx).
 				Table("contents").
 				Select(`contents.track_id, COALESCE(MAX(user_practices.score), MAX(user_projects.score)) AS "score"`).

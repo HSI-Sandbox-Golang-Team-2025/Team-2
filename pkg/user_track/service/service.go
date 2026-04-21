@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
@@ -34,6 +36,41 @@ func (s *userTrackService) Create(
 	}
 
 	return &userTrack, nil
+}
+
+func (s *userTrackService) GetUserTracks(
+	ctx context.Context,
+	queries map[string]string,
+	user *user.User,
+) (*[]user_track.UserTrack, error) {
+	reqUserId := user.ID
+	reqRoleId := user.RoleID
+
+	if reqRoleId != uint(role.Mentor) && queries["userId"] != "" {
+		return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	}
+
+	userId, _ := strconv.Atoi(queries["userId"])
+	status := queries["status"]
+
+	if reqRoleId != uint(role.Mentor) {
+		userId = int(reqUserId)
+	}
+
+	userTracks := []user_track.UserTrack{}
+
+	condition := repository.GetUserTracksCondition{
+		UserID: uint(userId),
+		Status: user_track.UserTrackStatus(status),
+	}
+
+	err := s.repo.GetUserTracks(ctx, &userTracks, &condition)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &userTracks, nil
 }
 
 func (s *userTrackService) GetByID(id uint) (*user_track.UserTrack, error) {

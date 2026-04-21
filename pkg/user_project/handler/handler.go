@@ -70,6 +70,7 @@ func (h *handler) StartUserProject(c *fiber.Ctx) error {
 func (h *handler) GetUserProjects(c *fiber.Ctx) error {
 	user := user.User{}
 	user.ID = c.Locals("userId").(uint)
+	user.RoleID = c.Locals("roleId").(uint)
 
 	data, err := h.service.GetUserProjects(context.Background(), c.Queries(), user)
 

@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strconv"
 
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
+	contentRepository "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice"
@@ -20,17 +22,20 @@ type service struct {
 	userPracticeRepo       repository.Repository
 	userPracticeRecordRepo userPracticeRecordRepository.Repository
 	userTrackRepo          userTrackRepository.Repository
+	contentRepo            contentRepository.Repository
 }
 
 func NewService(
 	userPracticeRepo repository.Repository,
 	userPracticeRecordRepo userPracticeRecordRepository.Repository,
 	userTrackRepo userTrackRepository.Repository,
+	contentRepo contentRepository.Repository,
 ) Service {
 	return &service{
 		userPracticeRepo:       userPracticeRepo,
 		userPracticeRecordRepo: userPracticeRecordRepo,
 		userTrackRepo:          userTrackRepo,
+		contentRepo:            contentRepo,
 	}
 }
 
@@ -42,11 +47,16 @@ func (s *service) GetUserPractices(
 	reqUserId := user.ID
 	reqRoleId := user.RoleID
 
+	if reqRoleId != uint(role.Mentor) && queries["userId"] != "" {
+		return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	}
+
 	contentId, _ := strconv.Atoi(queries["contentId"])
 	userId, _ := strconv.Atoi(queries["userId"])
+	status := queries["status"]
 
-	if reqRoleId != uint(role.Mentor) && reqUserId != uint(userId) {
-		return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	if reqRoleId != uint(role.Mentor) {
+		userId = int(reqUserId)
 	}
 
 	userPractices := []user_practice.UserPractice{}
@@ -54,6 +64,7 @@ func (s *service) GetUserPractices(
 	condition := repository.GetUserPracticesCondition{
 		UserID:    uint(userId),
 		ContentID: uint(contentId),
+		Status:    user_practice.UserPracticeStatus(status),
 	}
 
 	err := s.userPracticeRepo.GetUserPractices(ctx, &userPractices, &condition)
@@ -70,13 +81,44 @@ func (s *service) StartUserPractice(
 	body user_practice.UserPractice,
 	user user.User,
 ) (*user_practice.UserPractice, error) {
+	userId := user.ID
+
+	contentId := body.ContentID
+
+	getContentCondition := contentRepository.GetContentCondition{
+		ID:   contentId,
+		Type: content.ContentTypePractice,
+	}
+
+	content := content.Content{}
+
+	err := s.contentRepo.GetContent(ctx, &content, &getContentCondition)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	userTrack := user_track.UserTrack{}
+
+	condition := userTrackRepository.GetUserTrackCondition{
+		TrackID: content.TrackID,
+		UserID:  userId,
+	}
+
+	err = s.userTrackRepo.GetUserTrack(ctx, &userTrack, &condition)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
 	userPractice := user_practice.UserPractice{}
 
-	userPractice.UserID = user.ID
+	userPractice.UserID = userId
 	userPractice.ContentID = body.ContentID
+	userPractice.UserTrackID = userTrack.ID
 	userPractice.Status = user_practice.InProgress
 
-	err := s.userPracticeRepo.StartUserPractice(ctx, &userPractice)
+	err = s.userPracticeRepo.StartUserPractice(ctx, &userPractice)
 
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())

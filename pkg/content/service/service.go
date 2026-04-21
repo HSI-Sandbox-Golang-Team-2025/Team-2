@@ -6,11 +6,11 @@ import (
 
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/content/repository"
-	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/role"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user"
 	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material"
 	userMaterialRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_material/repository"
 	userPracticeRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_practice/repository"
+	"github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track"
 	userTrackRepo "github.com/HSI-Sandbox-Golang-Team-2025/Team-2/pkg/user_track/repository"
 	"github.com/gofiber/fiber/v2"
 )
@@ -42,13 +42,31 @@ func (s *service) GetContents(
 	userAuth *user.User,
 ) (*[]content.Content, error) {
 	reqUserId := userAuth.ID
-	reqRoleId := userAuth.RoleID
 
 	trackId, _ := strconv.Atoi(queries["trackId"])
-	userId, _ := strconv.Atoi(queries["userId"])
 
-	if reqRoleId != uint(role.Mentor) && reqUserId != uint(userId) {
-		return nil, fiber.NewError(fiber.StatusUnauthorized, "You are not authorized!")
+	if trackId == 0 {
+		return nil, fiber.NewError(fiber.StatusBadRequest, "Missing query: trackId")
+	}
+
+	userId := reqUserId
+
+	getUserTrackCondition := userTrackRepo.GetUserTrackCondition{
+		TrackID: uint(trackId),
+		UserID:  uint(userId),
+	}
+
+	err := s.userTrackRepo.GetUserTrack(
+		ctx,
+		&user_track.UserTrack{},
+		&getUserTrackCondition,
+	)
+
+	if err != nil {
+		if err.Error() == "User track not found!" {
+			return nil, fiber.NewError(fiber.StatusNotFound, "User is not registered on this track!")
+		}
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	contents := []content.Content{}
@@ -149,6 +167,21 @@ func (s *service) GetContent(
 				userMaterial.UserID = userId
 				userMaterial.ContentID = contentRes.ID
 
+				userTrack := user_track.UserTrack{}
+
+				condition := userTrackRepo.GetUserTrackCondition{
+					TrackID: contentRes.TrackID,
+					UserID:  userId,
+				}
+
+				err := s.userTrackRepo.GetUserTrack(ctx, &userTrack, &condition)
+
+				if err != nil {
+					return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+				}
+
+				userMaterial.UserTrackID = userTrack.ID
+
 				err = s.userMaterialRepo.OpenUserMaterial(ctx, &userMaterial)
 
 				if err != nil {
@@ -172,20 +205,6 @@ func (s *service) GetContent(
 
 	if err := s.contentRepo.GetContents(ctx, &contents, &getContentsCondition); err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	}
-
-	// Update UserTrack.Status to "completed"
-	if uint(len(contents)) == contentRes.Order+1 {
-		condition := userTrackRepo.CompleteUserTrackCondition{
-			TrackID: contentRes.TrackID,
-			UserID:  userId,
-		}
-
-		err := s.userTrackRepo.CompleteUserTrack(ctx, &condition)
-
-		if err != nil {
-			return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-		}
 	}
 
 	return &contentRes, nil
